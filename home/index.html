@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="../css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caronas disponíveis</title>
+</head>
+<body>
+    <h1>Caronas Universitárias</h1>
+    <p><button id="btnNovaCarona">Postar carona</button> <button id="btnLogoff">Sair</button> <button id="btnExcluirConta" class="btn-danger">Excluir conta</button></p>
+    <section>
+      <h2>Buscar carona</h2>
+      <div>
+        <label for="origem">Origem</label>
+        <input id="origem" type="text" />
+      </div>
+      <div>
+        <label for="destino">Destino</label>
+        <input id="destino" type="text" />
+      </div>
+      <div>
+        <button id="buscar">Buscar</button>
+        <button id="limpar">Limpar</button>
+      </div>
+    </section>
+    <section id="lista"></section>
+    <script src="../js/caronas.js"></script>
+    <script src="../js/valida_sessao.js"></script>
+</body>
+</html>

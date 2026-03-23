@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="../css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Carona Universitaria</title>
+</head>
+<body>
+    <h1>Cadastro novo</h1>
+    <div>
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" />
+    </div>
+    <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" />
+    </div>
+    <div>
+        <label for="usuario">Usuário</label>
+        <input id="usuario" type="text" />
+    </div>
+    <div>
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" />
+    </div>
+    <div>
+        <label for="tipo">Quem é você?</label>
+        <select id="tipo">
+            <option value="passageiro">Passageiro</option>
+            <option value="motorista">Motorista</option>
+        </select>
+    </div>
+    <div>
+        <label for="email_academico">Email Acadêmico (@puc.br)</label>
+        <input id="email_academico" type="email" />
+    </div>
+    <div>
+        <label for="idade">Idade</label>
+        <input id="idade" type="number" min="16" max="100" />
+    </div>
+
+    <!-- Campos específicos para motorista -->
+    <div id="campos_motorista" style="display: none;">
+        <h3>Informações do Veículo</h3>
+        <div>
+            <label for="foto_perfil">Foto de Perfil</label>
+            <input id="foto_perfil" type="file" accept="image/*" />
+        </div>
+        <div>
+            <label for="carro">Marca do Carro</label>
+            <input id="carro" type="text" placeholder="Ex: Fiat, Volkswagen" />
+        </div>
+        <div>
+            <label for="modelo">Modelo do Carro</label>
+            <input id="modelo" type="text" placeholder="Ex: Uno, Gol" />
+        </div>
+        <div>
+            <label for="placa">Placa do Carro</label>
+            <input id="placa" type="text" placeholder="ABC-1234" maxlength="8" />
+        </div>
+    </div>
+
+    <div>
+        <button id="enviar">Cadastrar</button>
+    </div>
+    <p><a href="../login/">Já tenho login</a></p>
+
+    <script src="../js/usuario_cadastro.js"></script>
+</body>
+</html>

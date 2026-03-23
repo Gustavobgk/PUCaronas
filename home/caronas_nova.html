@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="../css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Postar Carona</title>
+</head>
+<body>
+  <h1>Postar carona</h1>
+  <div><label>Origem</label><input id="origem" type="text" /></div>
+  <div><label>Destino</label><input id="destino" type="text" /></div>
+  <div><label>Data/Hora</label><input id="data_hora" type="datetime-local" /></div>
+  <div><label>Vagas</label><input id="vagas" type="number" min="1" value="1" /></div>
+  <div><label>Preço</label><input id="valor" type="number" step="0.01" min="0" /></div>
+  <div><label>Descrição</label><textarea id="descricao" rows="3"></textarea></div>
+  <div><button id="enviar">Salvar</button> <button id="voltar">Voltar</button></div>
+
+  <script src="../js/caronas_nova.js"></script>
+  <script src="../js/valida_sessao.js"></script>
+</body>
+</html>

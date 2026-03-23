@@ -1,0 +1,125 @@
+:root {
+  --vinho: #7f1734;
+  --vinho-claro: #a33554;
+  --branco-gemini: #f9f7f5;
+  --azul-profundo: #233749;
+  --cinza-claro: #e6e4e2;
+  --texto: #2a2a2a;
+  --subtitulo: #3e3e3e;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--branco-gemini) 0%, #f2eeec 100%);
+  color: var(--texto);
+}
+
+.container {
+  margin: 1rem auto;
+  max-width: 1080px;
+  padding: 1rem;
+}
+
+h1, h2 {
+  color: var(--vinho);
+  margin: .6rem 0 .4rem;
+}
+
+h1 { border-bottom: 3px solid var(--vinho); padding-bottom: .3rem; }
+
+a, button {
+  color: var(--vinho);
+  font-weight: 600;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover, button:hover {
+  color: var(--vinho-claro);
+}
+
+.btn {
+  border: 2px solid var(--vinho);
+  background: var(--branco-gemini);
+  color: var(--vinho);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: .55rem 1rem;
+  margin-right: .5rem;
+}
+
+.btn-danger {
+  border-color: #bd162b;
+  color: #bd162b;
+}
+
+.btn-danger {
+  border-color: #bd162b;
+  color: #bd162b;
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="datetime-local"], input[type="number"], select, textarea {
+  width: 100%;
+  padding: .6rem .7rem;
+  margin: .25rem 0 .8rem;
+  border: 1px solid #b1ada9;
+  border-radius: 5px;
+  background: #fff;
+  color: #333;
+}
+
+label {
+  font-weight: 600;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--cinza-claro);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+table th, table td {
+  border: 1px solid var(--cinza-claro);
+  text-align: left;
+  padding: .7rem;
+}
+
+table th {
+  background: var(--vinho);
+  color: white;
+  font-weight: 600;
+}
+
+.table-link {
+  display: inline-block;
+  margin-right: .35rem;
+}
+
+.alert {
+  background: #fff6f7;
+  border-left: 5px solid #bd162b;
+  padding: .8rem;
+  color: #5e212f;
+  margin: .7rem 0;
+}
+
+.footer {
+  text-align: center;
+  color: #797979;
+  padding: 1rem 0;
+}
