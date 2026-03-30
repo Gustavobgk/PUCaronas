@@ -51,7 +51,7 @@
             var cargo = e.options[e.selectedIndex].text;
             const doc = document.getElementById('doc').value;
             let requisicao = await fetch('../../api/usuario.php?action=cadastro' , {
-                method: 'PUT',
+                method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
                 },
