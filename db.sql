@@ -48,3 +48,23 @@ FOREIGN KEY (id_passageiro) REFERENCES usuario(id),
 FOREIGN KEY (id_carona) REFERENCES carona(id)
 );
 
+CREATE TABLE corrida (
+id INT PRIMARY KEY AUTO_INCREMENT,
+id_motorista INT,
+id_passageiro INT,
+id_carona INT,
+
+data_inicio DATETIME,
+data_fim DATETIME,
+
+origem VARCHAR(100),
+destino VARCHAR(100),
+
+valor DECIMAL(10,2),
+
+status ENUM('pendente','em_andamento','finalizada','cancelada'),
+
+FOREIGN KEY (id_motorista) REFERENCES usuario(id),
+FOREIGN KEY (id_passageiro) REFERENCES usuario(id),
+FOREIGN KEY (id_carona) REFERENCES carona(id)
+);
