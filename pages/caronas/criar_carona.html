@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Carona</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .form-control {
+            width: 20vw;
+        }
+        .card {
+            margin-top: 5vh;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .btn-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../home.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="caronas.html">Caronas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html">Log in</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/registro.html">Registrar-se</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card">
+        <h3 class="text-center mb-4">Criar Carona</h3>
+        <form id="formCarona">
+            <div class="form-group">
+                <label for="id_veiculo">Seu Veículo:</label><br>
+                <select class="form-select" aria-label="Default select example">
+            <option selected>Selecione seu carro</option>
+            </select>
+                
+            </div>
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="text" class="form-control" name="titulo" id="titulo">
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <input type="text" class="form-control" name="descricao" id="descricao">
+            </div>
+            <div class="form-group">
+                <label for="mensagem">Mensagem:</label>
+                <input type="text" class="form-control" name="mensagem" id="mensagem">
+            </div>
+            <div class="form-group">
+                <label for="vagas">Vagas:</label>
+                <input type="number" class="form-control" name="vagas" id="vagas">
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <input type="text" class="form-control" name="status" id="status">
+            </div>
+            <div class="form-group">
+                <label for="origem">Origem:</label>
+                <input type="text" class="form-control" name="origem" id="origem">
+            </div>
+            <div class="form-group">
+                <label for="destino">Destino:</label>
+                <input type="text" class="form-control" name="destino" id="destino">
+            </div>
+            <button type="button" id="btnCriar" class="btn btn-primary btn-block">Criar Carona</button>
+            <h1 id="resultado" class="text-center mt-3" style="font-size:1.2rem;"></h1>
+        </form>
+    </div>
+</div>
+<script>
+</script>
+</body>
+</html>
