@@ -23,6 +23,7 @@ switch ($method) {
         }
         break;
 
+        
     case 'POST':
         $id_motorista = $input['id_motorista'];
         $id_veiculo = $input['id_veiculo'];
