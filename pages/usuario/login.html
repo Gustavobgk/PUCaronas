@@ -83,14 +83,23 @@
     const resposta = await requisicao.json(); 
     const resultado = document.getElementById("resultado");
     dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
-    if(resposta.message == "Login ok") { 
+        if(resposta.message == "adm login ok") { 
     
-            nome = await pegar_nome(email);
-            sessionStorage.setItem("nome", nome); 
+            dados = await pegar_dados(email);
+            sessionStorage.setItem("nome", dados.nome); 
             resultado.innerHTML = "Usuário logado com sucesso!!";
             await dormir(1500);
             window.location.href = 'gerenciar.html';
-            
+        }
+    else if(resposta.message == "Login ok") { 
+
+            dados = await pegar_dados(email);
+            sessionStorage.setItem("nome", dados.nome);
+            sessionStorage.setItem("cargo", dados.cargo); 
+            resultado.innerHTML = "Usuário logado com sucesso!!";
+            await dormir(1500);
+            window.location.href = '../caronas/logado_home.html';
+            tela_personalizada();
         }
     else {
         resultado.innerHTML = "Email ou senha errados!!";
@@ -101,7 +110,8 @@
 
     }
 
-    async function pegar_nome(email){
+    async function pegar_dados(email){
+
             requisicao = await fetch(`../../api/usuario.php?email=${email}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -109,8 +119,11 @@
 
 
     const resposta = await requisicao.json(); 
-    return resposta.nome;
-    }    
+    return resposta;
+    }  
+    
+    
+    
     </script>
 </body>
 </html>

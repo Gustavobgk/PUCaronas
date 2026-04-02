@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Carro - PUCaronas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .card {
+            margin-top: 5vh;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+</nav>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card w-100" style="max-width: 500px;">
+        <h3 class="text-center mb-4">Cadastrar Carro</h3>
+        <form>
+            <div class="form-group">
+                <label for="modelo">Modelo:</label>
+                <input type="text" class="form-control" id="modelo" name="modelo">
+            </div>
+            <div class="form-group">
+                <label for="placa">Placa:</label>
+                <input type="text" class="form-control" id="placa" name="placa">
+            </div>
+            <div class="form-group">
+                <label for="n_assentos">Número de Assentos:</label>
+                <input type="number" class="form-control" id="n_assentos" name="n_assentos">
+            </div>
+            <button type="button" class="btn btn-primary btn-block">Cadastrar</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

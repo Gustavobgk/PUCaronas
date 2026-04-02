@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caronas - PUCaronas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .card {
+            margin-top: 5vh;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .carona-lista {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../home.html">Home</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="caronas.html">Caronas <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html">Log in</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/registro.html">Registrar-se</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card w-75">
+        <h3 class="text-center mb-4">Caronas Disponíveis</h3>
+        <form class="mb-4">
+            <div class="form-row justify-content-center">
+                <div class="col-md-6 mb-2">
+                    <input type="text" class="form-control" placeholder="Pesquisar por origem, destino ou motorista..." id="pesquisa">
+                </div>
+                <div class="col-md-2 mb-2">
+                    <button type="button" class="btn btn-primary btn-block">Pesquisar</button>
+                </div>
+            </div>
+        </form>
+        <div class="carona-lista">
+            <!-- lista com as caronas -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">PUC para Centro</h5>
+                    <p class="card-text font-weight-bold">Saída: 18h | Vagas: 3 | Motorista: João | Veículo: Fiat Uno</p>
+                    <p class="card-text">Descrição: Carona para o centro após as aulas. Bagagem pequena permitida.</p>
+                    <p class="card-text"><small class="text-muted">Origem: PUC | Destino: Centro</small></p>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Centro para PUC</h5>
+                    <p class="card-text font-weight-bold">Saída: 7h | Vagas: 2 | Motorista: Maria | Veículo: VW Gol</p>
+                    <p class="card-text">Descrição: Ida para a PUC pela manhã, carona diária durante o semestre.</p>
+                    <p class="card-text"><small class="text-muted">Origem: Centro | Destino: PUC</small></p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+</body>
+</html>
