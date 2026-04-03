@@ -27,22 +27,26 @@ switch ($method) {
     case 'POST':
         $id_motorista = $input['id_motorista'];
         $id_veiculo = $input['id_veiculo'];
-        $titulo = $input['id_veiculo'];
+        $titulo = $input['titulo'];
         $descricao = $input['descricao'];
         $mensagem = $input['mensagem'];
         $vagas = $input['vagas'];
-        $status = $input['status'];
+        $status = "aberta";
         $origem = $input['origem'];
         $destino = $input['destino'];
-        $conn->query("INSERT INTO carona(id_motorista,id_veiculo,titulo,descricao,mensagem,vagas,status,origem,destino) VALUES ('$id_motorista', '$id_veiculo', '$titulo', '$descricao', '$mensagem', '$vagas', '$status', '$origem', '$destino')");
-        echo json_encode(["message" => "carona sucesso"]);
+        $sql = "INSERT INTO carona(id_motorista,id_veiculo,titulo,descricao,mensagem,vagas,status,origem,destino) VALUES ('$id_motorista', '$id_veiculo', '$titulo', '$descricao', '$mensagem', '$vagas', '$status', '$origem', '$destino')";
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(["message" => "carona sucesso"]);
+        } else {
+            echo json_encode(["message" => "Erro ao criar carona", "error" => $conn->error]);
+        }
         break;
 
     case 'PUT':
         $id = $_GET['id'];
         $id_motorista = $input['id_motorista'];
         $id_veiculo = $input['id_veiculo'];
-        $titulo = $input['id_veiculo'];
+        $titulo = $input['titulo'];
         $descricao = $input['descricao'];
         $mensagem = $input['mensagem'];
         $vagas = $input['vagas'];

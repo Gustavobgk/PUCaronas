@@ -62,8 +62,12 @@
 
    <script>
     let nome = sessionStorage.getItem('nome');
-    if (nome){
+    let cargo = sessionStorage.getItem('cargo');
+    if (nome && cargo === 'admin'){
         window.location.href = 'gerenciar.html';
+    }
+    else if (nome && (cargo == "passageiro" || cargo == "motorista")){
+        window.location.href = '../caronas/logado_home.html';
     }
     btn = document.getElementById('enviar');
     btn.addEventListener('click',login);

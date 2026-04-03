@@ -81,5 +81,12 @@
         </div>
     </div>
 </div>
+<script>
+    const cargo = sessionStorage.getItem('cargo');
+            if (cargo !== 'motorista' && cargo !== 'passageiro') {
+            window.location.href = '../usuario/login.html';
+           
+        }
+</script>
 </body>
 </html>

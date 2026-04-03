@@ -55,5 +55,12 @@
         <p class="text-center mt-4">Faça seu cadastro, aguarde a aprovação e aproveite uma mobilidade mais sustentável e colaborativa!</p>
     </div>
 </div>
+<script>
+    
+    const cargo = sessionStorage.getItem('cargo');
+    if (cargo === 'motorista' || cargo === 'passageiro') {
+        window.location.href = 'caronas/logado_home.html'
+    } 
+</script>
 </body>
 </html>

@@ -53,9 +53,9 @@
         <form id="formCarona">
             <div class="form-group">
                 <label for="id_veiculo">Seu Veículo:</label><br>
-                <select class="form-select" aria-label="Default select example">
-            <option selected>Selecione seu carro</option>
-            </select>
+                <select class="form-select form-control" aria-label="Selecione seu veículo" id="id_veiculo">
+                    <option selected disabled>Selecione seu carro</option>
+                </select>
                 
             </div>
             <div class="form-group">
@@ -75,10 +75,6 @@
                 <input type="number" class="form-control" name="vagas" id="vagas">
             </div>
             <div class="form-group">
-                <label for="status">Status:</label>
-                <input type="text" class="form-control" name="status" id="status">
-            </div>
-            <div class="form-group">
                 <label for="origem">Origem:</label>
                 <input type="text" class="form-control" name="origem" id="origem">
             </div>
@@ -86,12 +82,103 @@
                 <label for="destino">Destino:</label>
                 <input type="text" class="form-control" name="destino" id="destino">
             </div>
-            <button type="button" id="btnCriar" class="btn btn-primary btn-block">Criar Carona</button>
+            <button type="button" id="btn" class="btn btn-primary btn-block">Criar Carona</button>
             <h1 id="resultado" class="text-center mt-3" style="font-size:1.2rem;"></h1>
         </form>
     </div>
 </div>
 <script>
+        const dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
+       document.addEventListener('DOMContentLoaded', async () => {
+        const cargo = sessionStorage.getItem('cargo');
+        if (cargo !== 'motorista') {
+            window.location.href = '../usuario/login.html';
+            return;
+        }
+        await carregarEPreencherVeiculos();
+    });
+
+    async function carregar_veiculos() {
+        const id_motorista = sessionStorage.getItem("id");
+        if (!id_motorista) {
+            console.error("ID do motorista não encontrado na sessão.");
+            return [];
+        }
+        try {
+            const requisicao = await fetch(`../../api/carros.php?id_motorista=${id_motorista}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!requisicao.ok) {
+                throw new Error(`Erro req: ${requisicao.statusText}`);
+            }
+            const veiculos = await requisicao.json();
+            console.log("Veículos:", veiculos);
+            return veiculos;
+        } catch (err) {
+            console.error("Erro ao carregar: ", err);
+            return [];
+        }
+    }
+
+    function preencher_veiculos(veiculos) {
+        const selectCarro = document.getElementById("id_veiculo");
+        if (veiculos.length === 0) {
+            selectCarro.innerHTML += `<option disabled>Nenhum veículo cadastrado</option>`;
+        } else {
+            veiculos.forEach(veiculo => {
+                selectCarro.innerHTML += `<option value="${veiculo.id}">${veiculo.modelo} - ${veiculo.placa}</option>`
+            });
+        }
+    }
+
+    async function carregarEPreencherVeiculos() {
+        const veiculos = await carregar_veiculos();
+        preencher_veiculos(veiculos);
+    }
+
+    const btn = document.getElementById("btn");
+    btn.addEventListener('click', enviar);
+
+    async function enviar() {
+        const resultado = document.getElementById('resultado');
+        try {
+            const id_motorista = sessionStorage.getItem('id');
+            const id_veiculo = document.getElementById('id_veiculo').value;
+            const titulo = document.getElementById('titulo').value;
+            const descricao = document.getElementById('descricao').value;
+            const mensagem = document.getElementById('mensagem').value;
+            const vagas = document.getElementById('vagas').value;
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+
+    
+            const requisicao = await fetch('../../api/carona.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id_motorista, id_veiculo, titulo, descricao, mensagem, vagas, origem, destino })
+            });
+
+            const resposta = await requisicao.json();
+            console.log("Resposta da criação de carona:", resposta);
+
+            if (resposta.message == "carona sucesso") {
+                resultado.innerHTML = "Carona criada com sucesso!";
+                dormir(1000);
+                window.location.href = 'minhas_caronas_motorista.html';
+            } else {
+                resultado.innerHTML = "Dados inválidos!!";
+            }
+
+        } catch (err) {
+            console.error("Erro ao criar carona:", err);
+            resultado.innerHTML = "Dados inválidos!!";
+        }
+    }
 </script>
 </body>
 </html>
