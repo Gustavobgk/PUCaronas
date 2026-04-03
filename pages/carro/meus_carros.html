@@ -24,17 +24,74 @@
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
     <div class="card w-100" style="max-width: 500px;">
         <h3 class="text-center mb-4">Meus Carros</h3>
-        <!-- Lista de carros será exibida aqui futuramente -->
-        <div id="carros-lista" class="mb-3"></div>
+        <div id="carros-lista" class="mb-3">
         <a href="criar_carro.html" class="btn btn-primary btn-block">Adicionar Novo Carro</a>
     </div>
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", (event) => {
     const nome = sessionStorage.getItem('nome');
     const cargo = sessionStorage.getItem('cargo');
     if (!nome || cargo !== 'motorista') {
         window.location.href = '../usuario/login.html';
     }
+    receber();
+});
+
+
+ async function receber(){
+            try {
+            id_motorista = sessionStorage.getItem('id');
+            let requisicao = await fetch(`../../api/carros.php?id_motorista=${id_motorista}` , {
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            })
+        const resposta = await requisicao.json(); 
+        console.log("Resposta:", resposta);
+        
+        const lista = document.getElementById('carros-lista');
+        lista.innerHTML = ""; 
+        resposta.forEach(carro => {
+            lista.innerHTML += `
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">${carro.modelo}</h5>
+                        <p class="mb-1">Placa: <b>${carro.placa}</b></p>
+                        <span class="badge badge-primary">${carro.n_assentos} assentos</span>
+                        <div class="mt-2 float-right">
+                            <a href="editar_carro.html?id=${carro.id}" class="btn btn-outline-secondary btn-sm mr-2">Editar</a>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deletar(${carro.id})">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+
+
+
+
+    } 
+            catch (err) {
+                console.log(err);
+            }
+
+
+
+
+}
+async function deletar(id){
+    await fetch(`../../api/carros.php?id=${id}`, { method: 'DELETE' });
+    lista = document.getElementById('carros-lista');
+    lista.innerHTML = "";
+    receber(); 
+}
+
+
+
+
 </script>
 </body>
 </html>

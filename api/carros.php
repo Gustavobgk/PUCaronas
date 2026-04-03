@@ -13,7 +13,18 @@ switch ($method) {
             $result = $conn->query("SELECT * FROM veiculo WHERE id=$id");
             $data = $result->fetch_assoc();
             echo json_encode($data);
-        } else {
+        }
+        else if (isset($_GET['id_motorista'])) {
+            $id_motorista = $_GET['id_motorista'];
+            $result = $conn->query("SELECT * FROM veiculo WHERE id_motorista=$id_motorista");
+            $carros = [];
+            while ($row = $result->fetch_assoc()) {
+                $carros[] = $row;
+            }
+            echo json_encode($carros);
+            }
+        
+        else {
             $result = $conn->query("SELECT * FROM veiculo");
             $users = [];
             while ($row = $result->fetch_assoc()) {
@@ -29,8 +40,13 @@ switch ($method) {
         $modelo = $input['modelo'];
         $placa = $input['placa'];
         $n_assentos = $input['n_assentos'];
-        $conn->query("INSERT INTO veiculo(id_motorista,modelo,placa,n_assentos) VALUES ('$id_motorista', '$modelo', '$placa', '$n_assentos')");
-        echo json_encode(["message" => "veiculo sucesso"]);
+        if ($conn->query("INSERT INTO veiculo(id_motorista,modelo,placa,n_assentos) VALUES ('$id_motorista', '$modelo', '$placa', '$n_assentos')")){
+            echo json_encode(["message" => "veiculo ok"]);
+        }
+        else{
+        echo json_encode(["error" => $conn->error]);
+
+        }
         break;
 
     case 'PUT':  
@@ -60,4 +76,4 @@ switch ($method) {
 }
 
 $conn->close();
-?>git 
+?>

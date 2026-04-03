@@ -37,9 +37,56 @@
                 <label for="n_assentos">Número de Assentos:</label>
                 <input type="number" class="form-control" id="n_assentos" name="n_assentos">
             </div>
-            <button type="button" class="btn btn-primary btn-block">Cadastrar</button>
+            <h1 id="resultado"></h1>
+            <button type="button" class="btn btn-primary btn-block" id="btn">Cadastrar</button>
         </form>
     </div>
 </div>
+<script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+    const nome = sessionStorage.getItem('nome');
+    const cargo = sessionStorage.getItem('cargo');
+    if (!nome || cargo !== 'motorista') {
+        window.location.href = '../usuario/login.html';
+    }
+});
+
+btn = document.getElementById("btn");
+btn.addEventListener('click',enviar);
+dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
+
+        async function enviar(){
+            try {
+            obj = {};
+            const id_motorista = sessionStorage.getItem('id');
+            const modelo = document.getElementById('modelo').value;
+            const placa = document.getElementById('placa').value;
+            const n_assentos = document.getElementById('n_assentos').value;
+            let requisicao = await fetch('../../api/carros.php' , {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id_motorista,modelo,placa,n_assentos})
+            })
+        const resposta = await requisicao.json(); 
+        console.log("Resposta:", resposta); 
+        resultado = document.getElementById('resultado');
+        if (resposta.message = "veiculo ok"){
+            resultado.innerHTML = "Veículo adicionado com sucesso";
+            dormir(1000);
+            window.location.href = 'meus_carros.html';
+        }
+        else {
+            resultado.innerHTML = "Erro de dados, ajuste os dados.";
+            dormir(1000);
+            resultado.innerHTML = "";
+        }
+    }
+     catch (err){
+                console.log(err)
+            }
+        }
+</script>
 </body>
 </html>
