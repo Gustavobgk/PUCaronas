@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+
+</style>
+<body>
+
+
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="../home.html">Home </a>
+      </li>
+        <li class="nav-item">
+        <a class="nav-link text-white" href="../caronas/caronas.html">Caronas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html">Log in</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/registro.html">Registrar-se</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+    <div>
+<h1 id="bem-vindo" style="margin:1vw;">Seja bem-vindo: </h1>
+<button type="button" id="logout" class="btn btn-danger" style="margin: 1vw;">Log out</button>
+
+<div style="background-color: #f8f9fa; padding: 20px; margin: 20px; border-radius: 8px;">
+  <h2>Buscar Caronas</h2>
+  <div class="row" style="margin-bottom: 15px;">
+    <div class="col-md-3">
+      <input type="text" id="filtro-origem" class="form-control" placeholder="Origem (ex: Portão)">
+    </div>
+    <div class="col-md-3">
+      <input type="text" id="filtro-destino" class="form-control" placeholder="Destino (ex: Prado Velho)">
+    </div>
+    <div class="col-md-6">
+      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 100%;">Filtrar Caronas</button>
+    </div>
+  </div>
+</div>
+
+<div style="margin: 20px;">
+  <h3>Caronas Disponíveis</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">ORIGEM</th>
+        <th scope="col">DESTINO</th>
+        <th scope="col">TÍTULO</th>
+        <th scope="col">DESCRIÇÃO</th>
+        <th scope="col">VAGAS</th>
+        <th scope="col">STATUS</th>
+        <th scope="col">AÇÃO</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-caronas">
+    </tbody>
+  </table>
+</div>
+
+<div id="detalhes-carona" style="display: none; background-color: #e7f3ff; padding: 20px; margin: 20px; border-radius: 8px; border-left: 5px solid #0066cc;">
+  <h3>Detalhes da Carona</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <p><strong>Origem:</strong> <span id="detalhe-origem"></span></p>
+      <p><strong>Destino:</strong> <span id="detalhe-destino"></span></p>
+      <p><strong>Título:</strong> <span id="detalhe-titulo"></span></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Descrição:</strong> <span id="detalhe-descricao"></span></p>
+      <p><strong>Mensagem:</strong> <span id="detalhe-mensagem"></span></p>
+      <p><strong>Vagas Disponíveis:</strong> <span id="detalhe-vagas"></span></p>
+      <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
+    </div>
+  </div>
+  <button type="button" class="btn btn-success">Reservar Carona</button>
+  <button type="button" class="btn btn-secondary" onclick="fecharDetalhes()">Fechar</button>
+</div>
+
+
+
+
+
+
+
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bemvindo = document.getElementById('bem-vindo');
+        const nome = sessionStorage.getItem('nome');
+        if (nome == null ){
+            window.location.href = 'login.html';
+    }
+    else{
+           bemvindo.innerHTML = `Seja bem-vindo ${nome}`; 
+           carregarCaronas();
+    }
+
+    document.getElementById('btn-filtrar').addEventListener('click', filtrarCaronas);
+
+    });
+async function carregarCaronas() {
+    try {
+        let requisicao = await fetch('../../api/carona.php', { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        console.log("Caronas carregadas:", resposta);
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao carregar caronas:", err);
+    }
+}
+
+
+async function filtrarCaronas() {
+    try {
+        
+        const origem = document.getElementById('filtro-origem').value;
+        const destino = document.getElementById('filtro-destino').value;
+
+        let url = '../../api/carona.php?'; 
+        if (origem) url += `origem=${origem}&`;
+        if (destino) url += `destino=${destino}&`;
+
+        console.log("URL de filtro:", url);
+
+        let requisicao = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        console.log("Caronas filtradas:", resposta);
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao filtrar caronas:", err);
+    }
+}
+
+function preencherTabelaCaronas(caronas) {
+    const tbody = document.getElementById('tbody-caronas');
+    tbody.innerHTML = "";
+
+    if (caronas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
+        return;
+    }
+
+    caronas.forEach(carona => {
+        tbody.innerHTML += `<tr>
+            <td>${carona.id}</td>
+            <td>${carona.origem}</td>
+            <td>${carona.destino}</td>
+            <td>${carona.titulo}</td>
+            <td>${carona.descricao}</td>
+            <td>${carona.vagas}</td>
+            <td>${carona.status}</td>
+            <td><button class="btn btn-info btn-sm" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Detalhes</button></td>
+        </tr>`;
+    });
+}
+
+
+function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas, status) { // Parâmetros atualizados
+    document.getElementById('detalhe-origem').textContent = origem;
+    document.getElementById('detalhe-destino').textContent = destino;
+    document.getElementById('detalhe-titulo').textContent = titulo;
+    document.getElementById('detalhe-descricao').textContent = descricao;
+    document.getElementById('detalhe-mensagem').textContent = mensagem;
+    document.getElementById('detalhe-vagas').textContent = vagas;
+    document.getElementById('detalhe-status').textContent = status;
+   
+    document.getElementById('detalhes-carona').style.display = 'block';
+}
+
+function fecharDetalhes() {
+    document.getElementById('detalhes-carona').style.display = 'none';
+}
+
+
+logoutbtn = document.getElementById("logout");
+logoutbtn.addEventListener('click',logout);
+    function logout(){
+     sessionStorage.clear(); 
+     window.location.href = '../usuario/login.html'; 
+    }
+    </script>
+</body>
+</html>

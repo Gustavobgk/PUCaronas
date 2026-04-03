@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUCaronas - Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .card {
+            margin-top: 10vh;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="home.html">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="caronas/caronas.html">Caronas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="usuario/login.html">Log in</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="usuario/registro.html">Registrar-se</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card w-50">
+        <div class="text-center">
+            <img src="../assets/pucaronas.png" alt="PUCaronas Logo" style="max-width: 430px; width: 100%; margin-bottom: 60px; display: inline-block;">
+        </div>
+        <h2 class="text-center mb-4">Bem-vindo ao PUCaronas!</h2>
+        <p class="lead text-center">O PUCaronas é o sistema oficial de caronas universitárias para estudantes da PUCPR.</p>
+        <ul>
+            <li>Conectamos motoristas e passageiros dentro do ambiente universitário.</li>
+            <li>Todos os documentos são verificados manualmente pelos administradores para garantir a segurança.</li>
+            <li>Apenas usuários com status <b>"aprovado"</b> podem acessar e utilizar a plataforma.</li>
+        </ul>
+        <p class="text-center mt-4">Faça seu cadastro, aguarde a aprovação e aproveite uma mobilidade mais sustentável e colaborativa!</p>
+    </div>
+</div>
+<script>
+    
+    const cargo = sessionStorage.getItem('cargo');
+    if (cargo === 'motorista' || cargo === 'passageiro') {
+        window.location.href = 'caronas/logado_home.html'
+    } 
+</script>
+</body>
+</html>
