@@ -132,6 +132,14 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$ 
+
+CREATE PROCEDURE aprovar_usuario(IN p_id_usuario INT)
+BEGIN
+    UPDATE usuario  
+    SET status = 'aprovado'
+    WHERE id = p_id_usuario;
+END $$
 
 
 
