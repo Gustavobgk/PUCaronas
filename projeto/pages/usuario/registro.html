@@ -91,56 +91,74 @@
 </div>
 <script>
         btn = document.getElementById("btn");
-        btn.addEventListener('click',enviar);
+        btn.addEventListener('click', enviar);
 
          // js para mostrar o campo de link da documentaçao somente para motoristas
         const selectCargo = document.getElementById('cargos');
         const docField = document.getElementById('docField');
 
-        selectCargo.addEventListener('change', function() {
+        selectCargo.addEventListener('change', function () {
             if (selectCargo.value === 'motorista') {
-                docField.style.display = 'block';  // Mostra o campo
+                docField.style.display = 'block';
             } else {
-                docField.style.display = 'none';   // Oculta o campo
+                docField.style.display = 'none';
             }
         });
 
-        async function enviar(){
-            try {
-            obj = {};
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const senha_hash = document.getElementById('senha_hash').value;
-            const data_nasc = document.getElementById('data_nasc').value;
-            var e = document.getElementById("cargos");
-            var value = e.value;
-            var cargo = e.options[e.selectedIndex].text;
-            const doc = document.getElementById('doc').value;
-            let requisicao = await fetch('../../api/usuario.php?action=cadastro' , {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({nome,email,senha_hash,data_nasc,cargo,doc})
-            })
-        const resposta = await requisicao.json(); 
-        console.log("Resposta:", resposta); 
-        resultado = document.getElementById('resultado')
-        if(resposta.message) { 
-            sessionStorage.setItem("nome", nome); 
+        async function enviar() {
+        try {
+        obj = {};
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        const senha_hash = document.getElementById('senha_hash').value;
+        const data_nasc = document.getElementById('data_nasc').value;
+        var e = document.getElementById("cargos");
+        var value = e.value;
+        var cargo = e.options[e.selectedIndex].text;
+        const doc = document.getElementById('doc').value;
+        resultado = document.getElementById('resultado');
+
+        const dominioPermitido = '@pucpr.edu.br'; 
+        if (!email.endsWith(dominioPermitido)) {
+            resultado.innerHTML = `E-mail inválido! Apenas e-mails do domínio <strong>${dominioPermitido}</strong> são permitidos.`;
+            return;
+        }
+
+        
+        if (senha_hash.length < 8) {
+            resultado.innerHTML = "A senha deve ter no mínimo 8 caracteres!";
+            return;
+        }
+
+        
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0); 
+        const nascimento = new Date(data_nasc);
+        if (nascimento > hoje) {
+            resultado.innerHTML = "A data de nascimento não pode ser uma data futura!";
+            return;
+        }
+
+        let requisicao = await fetch('../../api/usuario.php?action=cadastro', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nome, email, senha_hash, data_nasc, cargo, doc })
+        });
+
+        const resposta = await requisicao.json();
+        console.log("Resposta:", resposta);
+
+        if (resposta.message) {
+            sessionStorage.setItem("nome", nome);
             resultado.innerHTML = "Usuário adicionado com sucesso!!";
             window.location.href = 'login.html';
         }
-  } 
-            catch (err) {
-                console.log("erro é:" + err);
-                resultado.innerHTML = "Dados inválidos!!";
-
-            }
-       
-            
-
-
+    } catch (err) {
+        console.log("erro é:" + err);
+        resultado.innerHTML = "Dados inválidos!!";
+    }
 }
     </script>
 </body>
