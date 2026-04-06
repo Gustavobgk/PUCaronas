@@ -14,12 +14,23 @@ switch ($method) {
             $data = $result->fetch_assoc();
             echo json_encode($data);
         } else {
-            $result = $conn->query("SELECT * FROM carona");
-            $users = [];
-            while ($row = $result->fetch_assoc()) {
-                $users[] = $row;
+            $query = "SELECT * FROM carona WHERE 1=1";
+            if (isset($_GET['origem']) && !empty($_GET['origem'])) {
+                $origem = $conn->real_escape_string($_GET['origem']);
+                $query .= " AND origem LIKE '%$origem%'";
             }
-            echo json_encode($users);
+            if (isset($_GET['destino']) && !empty($_GET['destino'])) {
+                $destino = $conn->real_escape_string($_GET['destino']);
+                $query .= " AND destino LIKE '%$destino%'";
+            }
+            // Você pode adicionar mais filtros aqui se necessário, como por status ou id_motorista
+
+            $result = $conn->query($query);
+            $caronas = [];
+            while ($row = $result->fetch_assoc()) {
+                $caronas[] = $row;
+            }
+            echo json_encode($caronas);
         }
         break;
 

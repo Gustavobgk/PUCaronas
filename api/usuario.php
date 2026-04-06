@@ -65,9 +65,7 @@ switch ($method) {
                 else if ($user['cargo'] == 'admin') {
                     echo json_encode(["message" => "adm login ok", "nome" => $user['nome']]);
                 }
-                else if ($user['status'] != 'aprovado') {
-                    echo json_encode(["error" => "Usuário ainda em espera."]);
-                }
+               
                 else {
                     echo json_encode(["message" => "Login ok", "nome" => $user['nome']]);
                 }
