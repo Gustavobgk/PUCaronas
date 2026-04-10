@@ -49,9 +49,10 @@
       <input type="text" id="filtro-destino" class="form-control" placeholder="Destino (ex: Prado Velho)">
     </div>
     <div class="col-md-6">
-      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 100%;">Filtrar Caronas</button>
+      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 50%;">Filtrar Caronas</button>
+      <a href="criar_carona.html" class="btn btn-success" style="width: 45%; margin-left: 5px;">Criar Carona</a>
     </div>
-  </div>
+
 </div>
 
 <div style="margin: 20px;">
@@ -66,6 +67,8 @@
         <th scope="col">DESCRIÇÃO</th>
         <th scope="col">VAGAS</th>
         <th scope="col">STATUS</th>
+        <th scope="col">EDITAR</th>
+        <th scope="col">DELETAR</th>
         <th scope="col">AÇÃO</th>
       </tr>
     </thead>
@@ -171,7 +174,7 @@ function preencherTabelaCaronas(caronas) {
 
 
     if (caronasF.length === 0) { // caronas --> caronasF
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
         return;
     }
 
@@ -184,9 +187,18 @@ function preencherTabelaCaronas(caronas) {
             <td>${carona.descricao}</td>
             <td>${carona.vagas}</td>
             <td>${carona.status}</td>
+             <td><a href="alterar_carona.html?id=${carona.id}" class="btn btn-primary btn-sm">Alterar</a></td>
+            <td><button onclick="deletar(${carona.id})" class="btn btn-danger btn-sm">Deletar</button></td>
             <td><button class="btn btn-info btn-sm" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Detalhes</button></td>
         </tr>`;
     });
+}
+
+async function deletar(id){
+    await fetch(`../../api/carona.php?id=${id}`, { method: 'DELETE' });
+    tbody = document.getElementById('tbody-caronas');
+    tbody.innerHTML = "";
+    carregarCaronas(); 
 }
 
 
