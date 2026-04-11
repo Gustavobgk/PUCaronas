@@ -1,33 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caronas - PUCaronas</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-    <style>
-        .card {
-            margin-top: 5vh;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-        .carona-lista {
-            max-height: 50vh;
-            overflow-y: auto;
-        }
-        #map {
-            height: 500px;
-            width: 100%;
-        }
-    </style>
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+
+</style>
 <body>
+
+
 <nav class="navbar navbar-expand-lg" style="background-color: darkred;">
   <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,11 +19,11 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link text-white" href="../home.html">Home</a>
-      </li>
       <li class="nav-item active">
-        <a class="nav-link text-white" href="caronas.html">Caronas <span class="sr-only">(current)</span></a>
+        <a class="nav-link text-white" href="../home.html">Home </a>
+      </li>
+        <li class="nav-item">
+        <a class="nav-link text-white" href="../caronas/caronas.html">Caronas</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white" href="../usuario/login.html">Log in</a>
@@ -50,126 +34,180 @@
     </ul>
   </div>
 </nav>
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
-    <div class="card w-75">
-        <h3 class="text-center mb-4">Caronas Disponíveis</h3>
-        <form class="mb-4">
-            <div class="form-row justify-content-center">
-                <div class="col-md-6 mb-2">
-                    <input type="text" class="form-control" placeholder="Pesquisar por origem, destino ou motorista..." id="pesquisa">
-                </div>
-                <div class="col-md-2 mb-2">
-                    <button type="button" class="btn btn-primary btn-block">Pesquisar</button>
-                </div>
-            </div>
-        </form>
-        <div class="carona-lista">
-            <!-- lista com as caronas -->
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">PUC para Centro</h5>
-                    <p class="card-text font-weight-bold">Saída: 18h | Vagas: 3 | Motorista: João | Veículo: Fiat Uno</p>
-                    <p class="card-text">Descrição: Carona para o centro após as aulas. Bagagem pequena permitida.</p>
-                    <p class="card-text"><small class="text-muted">Origem: PUC | Destino: Centro</small></p>
-                    <button class="btn btn-outline-info mt-2" onclick="showRoute('PUC', 'Centro')">Ver rota</button>
-                </div>
-            </div>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Centro para PUC</h5>
-                    <p class="card-text font-weight-bold">Saída: 7h | Vagas: 2 | Motorista: Maria | Veículo: VW Gol</p>
-                    <p class="card-text">Descrição: Ida para a PUC pela manhã, carona diária durante o semestre.</p>
-                    <p class="card-text"><small class="text-muted">Origem: Centro | Destino: PUC</small></p>
-                    <button class="btn btn-outline-info mt-2" onclick="showRoute('Centro', 'PUC')">Ver rota</button>
-                </div>
-            </div>
-            
-        </div>
+
+    <div>
+<h1 id="bem-vindo" style="margin:1vw;">Seja bem-vindo: </h1>
+<button type="button" id="logout" class="btn btn-danger" style="margin: 1vw;">Log out</button>
+
+<div style="background-color: #f8f9fa; padding: 20px; margin: 20px; border-radius: 8px;">
+  <h2>Buscar Caronas</h2>
+  <div class="row" style="margin-bottom: 15px;">
+    <div class="col-md-3">
+      <input type="text" id="filtro-origem" class="form-control" placeholder="Origem (ex: Portão)">
     </div>
+    <div class="col-md-3">
+      <input type="text" id="filtro-destino" class="form-control" placeholder="Destino (ex: Prado Velho)">
+    </div>
+    <div class="col-md-6">
+      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 100%;">Filtrar Caronas</button>
+    </div>
+  </div>
 </div>
 
-<!-- Modal para visualizar rota -->
-<div class="modal fade" id="rotaModal" tabindex="-1" role="dialog" aria-labelledby="rotaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rotaModalLabel">Visualizar Rota</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="map" style="height: 400px;"></div>
-            </div>
-        </div>
-    </div>
+<div style="margin: 20px;">
+  <h3>Caronas Disponíveis</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">ORIGEM</th>
+        <th scope="col">DESTINO</th>
+        <th scope="col">TÍTULO</th>
+        <th scope="col">DESCRIÇÃO</th>
+        <th scope="col">VAGAS</th>
+        <th scope="col">STATUS</th>
+        <th scope="col">AÇÃO</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-caronas">
+    </tbody>
+  </table>
 </div>
-<script>
-    const cargo = sessionStorage.getItem('cargo');
-    if (cargo !== 'motorista' && cargo !== 'passageiro') {
-        window.location.href = '../usuario/login.html';
+
+<div id="detalhes-carona" style="display: none; background-color: #e7f3ff; padding: 20px; margin: 20px; border-radius: 8px; border-left: 5px solid #0066cc;">
+  <h3>Detalhes da Carona</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <p><strong>Origem:</strong> <span id="detalhe-origem"></span></p>
+      <p><strong>Destino:</strong> <span id="detalhe-destino"></span></p>
+      <p><strong>Título:</strong> <span id="detalhe-titulo"></span></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Descrição:</strong> <span id="detalhe-descricao"></span></p>
+      <p><strong>Mensagem:</strong> <span id="detalhe-mensagem"></span></p>
+      <p><strong>Vagas Disponíveis:</strong> <span id="detalhe-vagas"></span></p>
+      <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
+    </div>
+  </div>
+  <button type="button" class="btn btn-success">Reservar Carona</button>
+  <button type="button" class="btn btn-secondary" onclick="fecharDetalhes()">Fechar</button>
+</div>
+
+
+
+
+
+
+
+
+ <script>
+      document.addEventListener('DOMContentLoaded', function() {       
+          const bemvindo = document.getElementById('bem-vindo');        
+           const nome = sessionStorage.getItem('nome');         
+           const cargo = sessionStorage.getItem('cargo');  
+           const status = sessionStorage.getItem('status');
+           if (status === "espera"){
+            window.location.href = '../home.html';
+           }       
+          else if (cargo == 'motorista' || cargo == "passageiro" || cargo == "admin" ){          
+              bemvindo.innerHTML = `Seja bem-vindo ${nome}`;      
+                    carregarCaronas();     }   
+                      else{             
+                        window.location.href = '../usuario/login.html';        } 
+
+    document.getElementById('btn-filtrar').addEventListener('click', filtrarCaronas);
+
+    });
+async function carregarCaronas() {
+    try {
+        let requisicao = await fetch('../../api/carona.php', { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        console.log("Caronas carregadas:", resposta);
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao carregar caronas:", err);
+    }
+}
+
+
+async function filtrarCaronas() {
+    try {
+        
+        const origem = document.getElementById('filtro-origem').value;
+        const destino = document.getElementById('filtro-destino').value;
+
+        let url = '../../api/carona.php?'; 
+        if (origem) url += `origem=${origem}&`;
+        if (destino) url += `destino=${destino}&`;
+
+        console.log("URL de filtro:", url);
+
+        let requisicao = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        console.log("Caronas filtradas:", resposta);
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao filtrar caronas:", err);
+    }
+}
+
+function preencherTabelaCaronas(caronas) {
+    const tbody = document.getElementById('tbody-caronas');
+    tbody.innerHTML = "";
+
+    if (caronas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
+        return;
     }
 
-    let map;
-    let routingControl;
+    caronas.forEach(carona => {
+        tbody.innerHTML += `<tr>
+            <td>${carona.id}</td>
+            <td>${carona.origem}</td>
+            <td>${carona.destino}</td>
+            <td>${carona.titulo}</td>
+            <td>${carona.descricao}</td>
+            <td>${carona.vagas}</td>
+            <td>${carona.status}</td>
+            <td><button class="btn btn-info btn-sm" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Detalhes</button></td>
+        </tr>`;
+    });
+}
 
-    function initMap() {
-        map = L.map('map').setView([-23.5505, -46.6333], 10);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas, status) { // Parâmetros atualizados
+    document.getElementById('detalhe-origem').textContent = origem;
+    document.getElementById('detalhe-destino').textContent = destino;
+    document.getElementById('detalhe-titulo').textContent = titulo;
+    document.getElementById('detalhe-descricao').textContent = descricao;
+    document.getElementById('detalhe-mensagem').textContent = mensagem;
+    document.getElementById('detalhe-vagas').textContent = vagas;
+    document.getElementById('detalhe-status').textContent = status;
+   
+    document.getElementById('detalhes-carona').style.display = 'block';
+}
+
+function fecharDetalhes() {
+    document.getElementById('detalhes-carona').style.display = 'none';
+}
+
+
+logoutbtn = document.getElementById("logout");
+logoutbtn.addEventListener('click',logout);
+    function logout(){
+     sessionStorage.clear(); 
+     window.location.href = '../usuario/login.html'; 
     }
-
-    function showRoute(origem, destino) {
-        if (routingControl) {
-            map.removeControl(routingControl);
-        }
-
-        // Coordenadas hardcoded
-        const coords = {
-            'PUC': [-23.5596, -46.7318],
-            'Centro': [-23.5505, -46.6333]
-        };
-
-        const originCoords = coords[origem];
-        const destCoords = coords[destino];
-
-        if (originCoords && destCoords) {
-            routingControl = L.Routing.control({
-                waypoints: [
-                    L.latLng(originCoords[0], originCoords[1]),
-                    L.latLng(destCoords[0], destCoords[1])
-                ],
-                routeWhileDragging: false,
-                createMarker: function(i, waypoint, n) {
-                    const marker = L.marker(waypoint.latLng);
-                    if (i === 0) marker.bindPopup('Origem: ' + origem).openPopup();
-                    else if (i === n-1) marker.bindPopup('Destino: ' + destino).openPopup();
-                    return marker;
-                },
-                lineOptions: {
-                    styles: [{ color: 'blue', weight: 6, opacity: 0.8 }]
-                },
-                show: false
-            }).addTo(map);
-
-            setTimeout(() => {
-                const bounds = routingControl.getBounds();
-                if (bounds) {
-                    map.fitBounds(bounds);
-                }
-            }, 1000);
-        }
-
-        $('#rotaModal').modal('show');
-    }
-
-    window.onload = initMap;
-</script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    </script>
 </body>
 </html>

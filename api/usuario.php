@@ -65,6 +65,13 @@ switch ($method) {
                 else if ($user['cargo'] == 'admin') {
                     echo json_encode(["message" => "adm login ok", "nome" => $user['nome']]);
                 }
+
+                else if ($user['status'] == 'espera') {
+                    echo json_encode(["message" => "login espera", "nome" => $user['nome']]);
+                }
+                else if ($user['status'] !== 'aprovado') {
+                    echo json_encode(["message" => "login n ok", "nome" => $user['nome']]);
+                }
                
                 else {
                     echo json_encode(["message" => "Login ok", "nome" => $user['nome']]);
