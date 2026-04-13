@@ -10,7 +10,6 @@
        
         background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
         background-attachment: fixed;
-        min-height: 100vh;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
@@ -53,23 +52,24 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg" style="background-color: darkred;">
-  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+  <a class="navbar-brand text-white" href="home.html">PUCaronas</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav" style="height: 7vh;">
       <li class="nav-item active">
         <a class="nav-link text-white" href="home.html">Home <span class="sr-only">(current)</span></a>
       </li>
+
       <li class="nav-item">
         <a class="nav-link text-white" href="caronas/caronas.html">Caronas</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="usuario/login.html">Log in</a>
+            <li class="nav-item">
+        <a class="nav-link text-white" href="usuario/login.html">Login</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="usuario/registro.html">Registrar-se</a>
+      <li class="nav-item" id="logado">
+        <a class="nav-link text-white" href="usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
       </li>
     </ul>
   </div>
@@ -95,9 +95,18 @@
 <script>
     
     const cargo = sessionStorage.getItem('cargo');
+    const status = sessionStorage.getItem('status');
     if (cargo === 'motorista' || cargo === 'passageiro' || cargo === 'admin') {
         window.location.href = 'caronas/logado_home.html'
     } 
+    logado = document.getElementById('logado');
+    if (status){
+        logado.innerHTML =   '<a class="nav-link text-white" href="usuario/login.html" onclick="sessionStorage.clear()">Sair</a>';
+    }
+    else {
+            logado.innerHTML =   '<a class="nav-link text-white" href="usuario/registro.html">Registrar-se</a>';
+        
+    }
 </script>
 </body>
 </html>
