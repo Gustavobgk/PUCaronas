@@ -53,6 +53,10 @@
     document.addEventListener("DOMContentLoaded", (event) => {
     const nome = sessionStorage.getItem('nome');
     const cargo = sessionStorage.getItem('cargo');
+    const status = sessionStorage.getItem('status');
+    if (status == "espera"){
+        window.location.href = '../home.html';
+    }
     if (!nome || cargo !== 'motorista') {
         window.location.href = '../usuario/login.html';
     }
