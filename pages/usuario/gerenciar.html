@@ -110,16 +110,7 @@
             <td>${usuario.data_nasc}</td>
             <td>${usuario.status}</td>
             <td>${usuario.cargo}</td>
-            <td>${usuario.doc}</td>
-            <td>
-                ${usuario.doc ? 
-                    (usuario.doc.endsWith('.pdf') ? 
-                        `<a href="${usuario.doc}" target="_blank" class="btn btn-secondary btn-sm">Ver PDF</a>` : 
-                        `<a href="${usuario.doc}" target="_blank"><img src="${usuario.doc}" alt="Doc" style="max-width: 50px; max-height: 50px;"></a>`
-                    ) : 
-                    'N/A'
-                }
-            </td>
+            <td><img src="${usuario.doc}" alt="${usuario.doc}" width="100px" height="100px"></td>
             <td><a href="alterar_usuario.html?id=${usuario.id}" class="btn btn-primary btn-sm">Alterar</a></td>
             <td><button onclick="deletar(${usuario.id})" class="btn btn-danger btn-sm">Deletar</button></td>
                 

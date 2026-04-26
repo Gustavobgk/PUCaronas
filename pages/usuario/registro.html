@@ -75,12 +75,14 @@
                 </select>
             </div>
             
-            <div id="docField" style="display: none;">
-                <div class="form-group">
-                    <label for="doc">Link documentação crachá e CNH:</label>
-                    <input type="text" class="form-control" name="doc" id="doc">
-                </div>
-            </div>
+<div id="docField" style="display: none;">
+    <div class="form-group">
+        <label for="doc">Documentação (crachá e CNH):</label>
+        <input type="file" class="form-control" id="docFile" accept="image/*,.pdf">
+        <small class="text-muted">Envie uma foto ou PDF do seu crachá e CNH</small>
+        <div id="uploadStatus" class="mt-1"></div>
+    </div>
+</div>
             <button type="button" id="btn" class="btn btn-primary btn-block">Enviar</button>
             <h1 id="resultado" class="text-center mt-3" style="font-size:1.2rem;"></h1>
             <button type="button" class="btn btn-secondary btn-block mt-2">
@@ -107,16 +109,12 @@
 
         async function enviar() {
         try {
-        obj = {};
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
         const senha_hash = document.getElementById('senha_hash').value;
         const data_nasc = document.getElementById('data_nasc').value;
-        var e = document.getElementById("cargos");
-        var value = e.value;
-        var cargo = e.options[e.selectedIndex].text;
-        const doc = document.getElementById('doc').value;
-        resultado = document.getElementById('resultado');
+        const cargo = document.getElementById('cargos').value;
+        const resultado = document.getElementById('resultado');
 
         const dominioPermitido = '@pucpr.edu.br'; 
         if (!email.endsWith(dominioPermitido)) {
@@ -139,12 +137,39 @@
             return;
         }
 
+        let docUrl = '';
+        if (cargo === 'motorista') {
+            const file = document.getElementById('docFile').files[0];
+            if (!file) {
+                resultado.innerHTML = "Motorista deve enviar a documentação!";
+                return;
+            }
+            document.getElementById('uploadStatus').innerHTML =
+                '<small class="text-info">Enviando documento...</small>';
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'docmotorista');
+            formData.append('folder', 'pucaronas/docs');
+            const uploadRes = await fetch(
+                'https://api.cloudinary.com/v1_1/dwisfepyr/auto/upload',
+                { method: 'POST', body: formData }
+            );
+            const uploadData = await uploadRes.json();
+            if (!uploadData.secure_url) {
+                resultado.innerHTML = "Erro ao enviar documento. Tente novamente.";
+                return;
+            }
+            docUrl = uploadData.secure_url;
+            document.getElementById('uploadStatus').innerHTML =
+                '<small class="text-success">Documento enviado!</small>';
+        }
+
         let requisicao = await fetch('../../api/usuario.php?action=cadastro', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ nome, email, senha_hash, data_nasc, cargo, doc })
+            body: JSON.stringify({ nome, email, senha_hash, data_nasc, cargo, doc:docUrl })
         });
 
         const resposta = await requisicao.json();

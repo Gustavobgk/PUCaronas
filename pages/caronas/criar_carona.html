@@ -26,27 +26,25 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg" style="background-color: darkred;">
-  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+  <a class="navbar-brand text-white" href="#">PUCaronas</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link text-white" href="../home.html">Home</a>
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="logado_home.html">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white" href="caronas.html">Caronas</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white" href="../usuario/login.html">Log in</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="../usuario/registro.html">Registrar-se</a>
+        <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
       </li>
     </ul>
   </div>
 </nav>
+
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
     <div class="card">
         <h3 class="text-center mb-4">Criar Carona</h3>
