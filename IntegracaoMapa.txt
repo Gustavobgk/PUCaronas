@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Mudanças implementadas para o PBI de visualizar rota com mapa Leaflet:
 
 1. Arquivo: pages/caronas/caronas.html
@@ -30,4 +31,38 @@ Mudanças implementadas para o PBI de visualizar rota com mapa Leaflet:
    - Leaflet Routing Machine JS
    - jQuery e Bootstrap (para modal)
 
+=======
+Mudanças implementadas para o PBI de visualizar rota com mapa Leaflet:
+
+1. Arquivo: pages/caronas/caronas.html
+   Adicionado links CSS para Leaflet e Leaflet Routing Machine no <head>:
+   - <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+   - <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+2. Arquivo: pages/caronas/caronas.html
+   Adicionado modal HTML após a div principal:
+   - <div class="modal fade" id="rotaModal" ... com <div id="map" style="height: 400px;"></div>
+
+3. Arquivo: pages/caronas/caronas.html
+   Modificado o primeiro botão "Ver rota" para incluir onclick:
+   - onclick="showRoute('PUC', 'Centro')"
+
+4. Arquivo: pages/caronas/caronas.html
+   Modificado o segundo botão "Ver rota" para incluir onclick:
+   - onclick="showRoute('Centro', 'PUC')"
+
+5. Arquivo: pages/caronas/caronas.html
+   Substituído o script original por novo script com funções Leaflet:
+   - Verificação de cargo (igual ao original)
+   - initMap(): Inicializa mapa com OpenStreetMap tiles
+   - showRoute(origem, destino): Calcula rota com coordenadas hardcoded, adiciona marcadores e linha azul
+   - window.onload = initMap
+
+6. Arquivo: pages/caronas/caronas.html
+   Adicionado scripts JS externos:
+   - Leaflet JS
+   - Leaflet Routing Machine JS
+   - jQuery e Bootstrap (para modal)
+
+>>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
 Resultado: Botões "Ver rota" agora abrem modal com mapa mostrando rota de carro entre PUC e Centro.

@@ -7,6 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
 </style>
 <body>
 
@@ -31,6 +35,7 @@
   </div>
 </nav>
 
+<<<<<<< HEAD
 <div class="container main-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 id="bem-vindo" class="h3 mb-0">Gerenciamento de Caronas</h1>
@@ -68,6 +73,48 @@
             </tbody>
         </table>
     </div>
+=======
+    <div>
+<h1 id="bem-vindo" style="margin:1vw;">Seja bem-vindo: </h1>
+<button type="button" id="logout" class="btn btn-danger" style="margin: 1vw;">Log out</button>
+
+<div style="background-color: #f8f9fa; padding: 20px; margin: 20px; border-radius: 8px;">
+  <h2>Buscar Caronas</h2>
+  <div class="row" style="margin-bottom: 15px;">
+    <div class="col-md-3">
+      <input type="text" id="filtro-origem" class="form-control" placeholder="Origem (ex: Portão)">
+    </div>
+    <div class="col-md-3">
+      <input type="text" id="filtro-destino" class="form-control" placeholder="Destino (ex: Prado Velho)">
+    </div>
+    <div class="col-md-6">
+      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 50%;">Filtrar Caronas</button>
+      <a href="criar_carona.html" class="btn btn-success" style="width: 45%; margin-left: 5px;">Criar Carona</a>
+    </div>
+
+</div>
+
+<div style="margin: 20px;">
+  <h3>Caronas Disponíveis</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">ORIGEM</th>
+        <th scope="col">DESTINO</th>
+        <th scope="col">TÍTULO</th>
+        <th scope="col">DESCRIÇÃO</th>
+        <th scope="col">VAGAS</th>
+        <th scope="col">STATUS</th>
+        <th scope="col">EDITAR</th>
+        <th scope="col">DELETAR</th>
+        <th scope="col">AÇÃO</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-caronas">
+    </tbody>
+  </table>
+>>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
 </div>
 
 <div id="detalhes-carona" style="display: none; background-color: #e7f3ff; padding: 20px; margin: 20px; border-radius: 8px; border-left: 5px solid #0066cc;">
@@ -103,7 +150,11 @@
         if (nome == null ){
             window.location.href = 'login.html';
     }
+<<<<<<< HEAD
     else {
+=======
+    else{
+>>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
            bemvindo.innerHTML = `Seja bem-vindo ${nome}`; 
            carregarCaronas();
     }
@@ -113,7 +164,11 @@
     });
 async function carregarCaronas() {
     try {
+<<<<<<< HEAD
         const idMotoristaLogado = sessionStorage.getItem('id');
+=======
+        const idMotoristaLogado = sessionStorage.getItem('id'); // Está linha não exisita 
+>>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
         
         let requisicao = await fetch('../../api/carona.php', { 
             method: 'GET',
@@ -122,6 +177,11 @@ async function carregarCaronas() {
             }
         });
         const resposta = await requisicao.json();
+<<<<<<< HEAD
+=======
+        const caronasDoMotorista = resposta.filter(carona => carona.id_motorista == idMotoristaLogado); // Está linha não existia 
+        console.log("Caronas carregadas:", resposta);
+>>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
         preencherTabelaCaronas(resposta);
     } catch (err) {
         console.log("Erro ao carregar caronas:", err);
@@ -163,6 +223,10 @@ function preencherTabelaCaronas(caronas) {
 
     const caronasF = caronas.filter(carona => carona.id_motorista == idMotoristaLogado); // Está linha não existia | Caronas --> CaronasF
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
     if (caronasF.length === 0) { // caronas --> caronasF
         tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
         return;
