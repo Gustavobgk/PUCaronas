@@ -7,10 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-<<<<<<< HEAD
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-=======
->>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
+
     <style>
         .card {
             margin-top: 5vh;
@@ -65,12 +63,9 @@
                 <div class="col-md-2 mb-2">
                     <button type="button" class="btn btn-primary btn-block">Pesquisar</button>
                 </div>
-<<<<<<< HEAD
                 <div class="col-md-3 mb-2">
                     <button type="button" class="btn btn-success btn-block" onclick="openRoutePlanner()">Planejar Rota (Waze)</button>
                 </div>
-=======
->>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
             </div>
         </form>
         <div class="carona-lista">
@@ -109,7 +104,6 @@
                 </button>
             </div>
             <div class="modal-body">
-<<<<<<< HEAD
                 <div class="row mb-3">
                     <div class="col">
                         <input type="text" id="inputOrigem" class="form-control" placeholder="Ponto de entrada (Ex: Rua XV)">
@@ -123,23 +117,16 @@
                 </div>
                 <div id="map" style="height: 450px; background: #eee; border: 1px solid #ccc;"></div>
                 <div id="instrucoes" style="margin-top: 10px; max-height: 150px; overflow-y: auto;"></div>
-=======
-                <div id="map" style="height: 400px;"></div>
->>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
             </div>
         </div>
     </div>
 </div>
-<<<<<<< HEAD
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-=======
->>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
 <script>
     const cargo = sessionStorage.getItem('cargo');
     if (cargo !== 'motorista' && cargo !== 'passageiro') {
@@ -150,17 +137,12 @@
     let routingControl;
 
     function initMap() {
-<<<<<<< HEAD
         // Coordenadas de Curitiba
         map = L.map('map').setView([-25.4290, -49.2671], 12);
-=======
-        map = L.map('map').setView([-23.5505, -46.6333], 10);
->>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
-<<<<<<< HEAD
 
         // Correção: O Leaflet precisa recalcular o tamanho quando o modal abre
         $('#rotaModal').on('shown.bs.modal', function () {
@@ -182,18 +164,12 @@
     }
 
     async function showRoute(origem, destino) {
-=======
-    }
-
-    function showRoute(origem, destino) {
->>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
         if (routingControl) {
             map.removeControl(routingControl);
         }
 
         // Coordenadas hardcoded
         const coords = {
-<<<<<<< HEAD
             'PUC': [-25.4521, -49.2528], // Coordenada real da PUCPR Curitiba
             'Centro': [-25.4300, -49.2700] 
         };
@@ -245,50 +221,5 @@
 
     $(document).ready(initMap);
 </script>
-=======
-            'PUC': [-23.5596, -46.7318],
-            'Centro': [-23.5505, -46.6333]
-        };
-
-        const originCoords = coords[origem];
-        const destCoords = coords[destino];
-
-        if (originCoords && destCoords) {
-            routingControl = L.Routing.control({
-                waypoints: [
-                    L.latLng(originCoords[0], originCoords[1]),
-                    L.latLng(destCoords[0], destCoords[1])
-                ],
-                routeWhileDragging: false,
-                createMarker: function(i, waypoint, n) {
-                    const marker = L.marker(waypoint.latLng);
-                    if (i === 0) marker.bindPopup('Origem: ' + origem).openPopup();
-                    else if (i === n-1) marker.bindPopup('Destino: ' + destino).openPopup();
-                    return marker;
-                },
-                lineOptions: {
-                    styles: [{ color: 'blue', weight: 6, opacity: 0.8 }]
-                },
-                show: false
-            }).addTo(map);
-
-            setTimeout(() => {
-                const bounds = routingControl.getBounds();
-                if (bounds) {
-                    map.fitBounds(bounds);
-                }
-            }, 1000);
-        }
-
-        $('#rotaModal').modal('show');
-    }
-
-    window.onload = initMap;
-</script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
->>>>>>> 8ace1a553245d84f81d7e865d25ce0f5a3816e86
 </body>
 </html>
