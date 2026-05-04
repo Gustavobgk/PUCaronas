@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caronas - PUCaronas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        .card {
+            margin-top: 5vh;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .carona-lista {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" style="color: white;" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../home.html">Home</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="caronas.html">Caronas <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html">Log in</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/registro.html">Registrar-se</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card w-75">
+        <h3 class="text-center mb-4">Caronas Disponíveis</h3>
+        <form class="mb-4">
+            <div class="form-row justify-content-center">
+                <div class="col-md-6 mb-2">
+                    <input type="text" class="form-control" placeholder="Pesquisar por origem, destino ou motorista..." id="pesquisa">
+                </div>
+                <div class="col-md-2 mb-2">
+                    <button type="button" class="btn btn-primary btn-block">Pesquisar</button>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <button type="button" class="btn btn-success btn-block" onclick="openRoutePlanner()">Planejar Rota (Waze)</button>
+                </div>
+            </div>
+        </form>
+        <div class="carona-lista">
+            <!-- lista com as caronas -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">PUC para Centro</h5>
+                    <p class="card-text font-weight-bold">Saída: 18h | Vagas: 3 | Motorista: João | Veículo: Fiat Uno</p>
+                    <p class="card-text">Descrição: Carona para o centro após as aulas. Bagagem pequena permitida.</p>
+                    <p class="card-text"><small class="text-muted">Origem: PUC | Destino: Centro</small></p>
+                    <button class="btn btn-outline-info mt-2" onclick="showRoute('PUC', 'Centro')">Ver rota</button>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Centro para PUC</h5>
+                    <p class="card-text font-weight-bold">Saída: 7h | Vagas: 2 | Motorista: Maria | Veículo: VW Gol</p>
+                    <p class="card-text">Descrição: Ida para a PUC pela manhã, carona diária durante o semestre.</p>
+                    <p class="card-text"><small class="text-muted">Origem: Centro | Destino: PUC</small></p>
+                    <button class="btn btn-outline-info mt-2" onclick="showRoute('Centro', 'PUC')">Ver rota</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Modal para visualizar rota -->
+<div class="modal fade" id="rotaModal" tabindex="-1" role="dialog" aria-labelledby="rotaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rotaModalLabel">Visualizar Rota</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <input type="text" id="inputOrigem" class="form-control" placeholder="Ponto de entrada (Ex: Rua XV)">
+                    </div>
+                    <div class="col">
+                        <input type="text" id="inputDestino" class="form-control" placeholder="Destino final (Ex: PUCPR)">
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary" onclick="calculateCustomRoute()">Traçar Rota</button>
+                    </div>
+                </div>
+                <div id="map" style="height: 450px; background: #eee; border: 1px solid #ccc;"></div>
+                <div id="instrucoes" style="margin-top: 10px; max-height: 150px; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+<script>
+    const cargo = sessionStorage.getItem('cargo');
+    if (cargo !== 'motorista' && cargo !== 'passageiro') {
+        window.location.href = '../usuario/login.html';
+    }
+
+    let map;
+    let routingControl;
+
+    function initMap() {
+        // Coordenadas de Curitiba
+        map = L.map('map').setView([-25.4290, -49.2671], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Correção: O Leaflet precisa recalcular o tamanho quando o modal abre
+        $('#rotaModal').on('shown.bs.modal', function () {
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 100);
+        });
+    }
+
+    function openRoutePlanner() {
+        if (!map) initMap();
+        document.getElementById('inputOrigem').value = '';
+        document.getElementById('inputDestino').value = '';
+        if (routingControl) {
+            map.removeControl(routingControl);
+            routingControl = null;
+        }
+        $('#rotaModal').modal('show');
+    }
+
+    async function showRoute(origem, destino) {
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        // Coordenadas hardcoded
+        const coords = {
+            'PUC': [-25.4521, -49.2528], // Coordenada real da PUCPR Curitiba
+            'Centro': [-25.4300, -49.2700] 
+        };
+
+        let originCoords = coords[origem];
+        let destCoords = coords[destino];
+
+        if (!originCoords || !destCoords) {
+            alert("Selecione uma rota válida ou use o Planejador Manual.");
+            return;
+        }
+
+        drawRoute(L.latLng(originCoords[0], originCoords[1]), L.latLng(destCoords[0], destCoords[1]), origem, destino);
+        $('#rotaModal').modal('show');
+    }
+
+    function calculateCustomRoute() {
+        const org = document.getElementById('inputOrigem').value + ", Curitiba";
+        const dest = document.getElementById('inputDestino').value + ", Curitiba";
+
+        const geocoder = L.Control.Geocoder.nominatim();
+        geocoder.geocode(org, (res1) => {
+            if (res1.length > 0) {
+                geocoder.geocode(dest, (res2) => {
+                    if (res2.length > 0) {
+                        drawRoute(res1[0].center, res2[0].center, org, dest);
+                    } else { alert("Destino não encontrado"); }
+                });
+            } else { alert("Origem não encontrada"); }
+        });
+    }
+
+    function drawRoute(p1, p2, label1, label2) {
+        if (routingControl) { map.removeControl(routingControl); }
+
+        routingControl = L.Routing.control({
+            waypoints: [p1, p2],
+            routeWhileDragging: true,
+            language: 'pt-BR',
+            createMarker: function(i, waypoint, n) {
+                return L.marker(waypoint.latLng).bindPopup(i === 0 ? "Início: " + label1 : "Fim: " + label2);
+            },
+            lineOptions: {
+                styles: [{ color: '#FF0000', weight: 6, opacity: 0.8 }] // Estilo Waze (Vermelho)
+            },
+            itinerary: { containerClassName: 'itinerario-waze' }
+        }).addTo(map);
+    }
+
+    $(document).ready(initMap);
+</script>
+</body>
+</html>

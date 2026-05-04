@@ -1,0 +1,48 @@
+            
+   REGISTRO FEITO DS MODIFICAÇÕES E EVOLUÇÃO
+
+
+1. INTEGRAÇÃO DE MAPAS E ROTAS 
+
+- Implementação da biblioteca Leaflet.js e Leaflet Routing Machine.
+- Criação do "rotaModal" em caronas.html para visualização de trajetos.
+- Função de Geocodificação: Conversão de nomes de bairros (ex: Portão, Bacacheri) 
+  em coordenadas geográficas reais via Nominatim.
+- Estilização Waze: Rota desenhada com linha laranja (weight 9) e 
+  marcadores personalizados (Verde para Início, Vermelho para Destino).
+- Ajuste de Layout: Uso do `map.invalidateSize()` para corrigir o bug de 
+  renderização parcial do mapa dentro de Modais Bootstrap.
+
+2. EVOLUÇÃO DA INTERFACE (UI/UX PREMIUM)
+
+- Identidade Visual: Aplicação de gradiente linear PUC (Dark Red).
+- Glassmorphism: Implementação de containers com fundo semi-transparente, 
+  bordas finas e alguns efeitos tb (backdrop-filter: blur).
+- De Tabela para Cards: A listagem de caronas em `caronas.html` foi  
+  reformulada de uma tabela HTML simples para um grid de Cards modernos e interativos.
+- Tipografia: Integração da fonte 'Poppins' via Google Fonts.
+- Efeitos de Hover: Adição de transições suaves e elevação dos cards ao passar o mouse.
+
+3. PAINEL ADMINISTRATIVO E GESTÃO DE USUÁRIOS
+
+- Criação da Tela Admin: Desenvolvimento do `admin_usuarios.html` dedicado 
+  exclusivamente à gestão da base de usuários.
+- Fluxo de Aprovação: Implementação visual e lógica para o Admin aprovar 
+  motoristas e passageiros que estão em status de "espera".
+- Verificação de Documentos: Adição de links diretos para visualização de CNH/Crachá 
+  armazenados no Cloudinary.
+- Segurança de Acesso: Bloqueio de rotas administrativas para usuários que 
+  não possuem o cargo 'admin' no sessionStorage.
+
+4. MELHORIAS NA LÓGICA DE NEGÓCIO E BACKEND (API)
+
+- Redirecionamento: Correção no `login.html` para enviar o Admin 
+  para uma Home centralizada.
+- Filtros Avançados: Otimização da busca por Origem e Destino com suporte a 
+  strings parciais (LIKE %query%).
+- Gestão de Sessão: Padronização do uso de sessionStorage para persistir 
+  Nome, Cargo, ID e Status do usuário logado.
+- CRUD de Veículos: Integração da listagem e exclusão de carros diretamente 
+  pela interface do motorista.
+
+

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Carros - PUCaronas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .card {
+            margin-top: 5vh;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="../caronas/logado_home.html">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../caronas/caronas.html">Caronas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card w-100" style="max-width: 500px;">
+        <h3 class="text-center mb-4">Meus Carros</h3>
+        <div class="text-center mb-3">
+            <a href="criar_carro.html" class="btn btn-primary">Adicionar Novo Carro</a>
+        </div>
+        <div id="carros-lista" class="mb-3"></div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+    const nome = sessionStorage.getItem('nome');
+    const cargo = sessionStorage.getItem('cargo');
+    const status = sessionStorage.getItem('status');
+    if (status == "espera"){
+        window.location.href = '../home.html';
+    }
+    if (!nome || cargo !== 'motorista') {
+        window.location.href = '../usuario/login.html';
+    }
+    receber();
+});
+
+
+ async function receber(){
+            try {
+            id_motorista = sessionStorage.getItem('id');
+            let requisicao = await fetch(`../../api/carros.php?id_motorista=${id_motorista}` , {
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            })
+        const resposta = await requisicao.json(); 
+        console.log("Resposta:", resposta);
+        
+        const lista = document.getElementById('carros-lista');
+        lista.innerHTML = ""; 
+        resposta.forEach(carro => {
+            lista.innerHTML += `
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">${carro.modelo}</h5>
+                        <p class="mb-1">Placa: <b>${carro.placa}</b></p>
+                        <span class="badge badge-primary">${carro.n_assentos} assentos</span>
+                        <div class="mt-2 float-right">
+                            <a href="editar_carro.html?id=${carro.id}" class="btn btn-outline-secondary btn-sm mr-2">Editar</a>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deletar(${carro.id})">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+
+
+
+
+    } 
+            catch (err) {
+                console.log(err);
+            }
+
+
+
+
+}
+async function deletar(id){
+    await fetch(`../../api/carros.php?id=${id}`, { method: 'DELETE' });
+    lista = document.getElementById('carros-lista');
+    lista.innerHTML = "";
+    receber(); 
+}
+
+
+
+
+</script>
+</body>
+</html>

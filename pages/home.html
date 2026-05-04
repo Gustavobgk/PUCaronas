@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUCaronas - Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+    body {
+       
+        background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+        background-attachment: fixed;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    
+
+    .card {
+        margin-top: 5vh;
+        margin-bottom: 5vh;
+        padding: 3rem;
+        border-radius: 1.5rem;
+        
+        
+        background: rgba(255, 255, 255, 0.75) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px);
+        
+        
+        border: 2px solid rgba(255, 255, 255, 0.9) !important;
+        
+        
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                    inset 0 0 10px rgba(255, 255, 255, 0.3);
+        
+        transition: transform 0.3s ease;
+    }
+
+
+    ul li {
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    b {
+        color: darkred;
+    }
+
+
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" href="home.html">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav" style="height: 4.5vh;">
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="home.html">Home <span class="sr-only">(current)</span></a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white" href="caronas/caronas.html">Caronas</a>
+      </li>
+            <li class="nav-item">
+        <a class="nav-link text-white" href="usuario/login.html">Login</a>
+      </li>
+      <li class="nav-item" id="logado">
+        <a class="nav-link text-white" href="usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card w-50">
+        <div class="text-center">
+          <!-- Deixei nossa logo com o canto mais arredondado para combinar com a pagina -->
+            <img src="../assets/pucaronas.png" 
+     alt="PUCaronas Logo" 
+     style="max-width: 430px; width: 100%; margin-bottom: 60px; display: inline-block; border-radius: 15px;">
+        </div>
+        <h2 class="text-center mb-4">Bem-vindo ao PUCaronas!</h2>
+        <p class="lead text-center">O PUCaronas é o sistema oficial de caronas universitárias para estudantes da PUCPR.</p>
+        <ul>
+            <li>Conectamos motoristas e passageiros dentro do ambiente universitário.</li>
+            <li>Todos os documentos são verificados manualmente pelos administradores para garantir a segurança.</li>
+            <li>Apenas usuários com status <b>"aprovado"</b> podem acessar e utilizar a plataforma.</li>
+        </ul>
+        <p class="text-center mt-4">Faça seu cadastro, aguarde a aprovação e aproveite uma mobilidade mais sustentável e colaborativa!</p>
+    </div>
+</div>
+<script>
+    
+    const cargo = sessionStorage.getItem('cargo');
+    const status = sessionStorage.getItem('status');
+    if (cargo === 'motorista' || cargo === 'passageiro' || cargo === 'admin') {
+        window.location.href = 'caronas/logado_home.html'
+    } 
+    logado = document.getElementById('logado');
+    if (status){
+        logado.innerHTML =   '<a class="nav-link text-white" href="usuario/login.html" onclick="sessionStorage.clear()">Sair</a>';
+    }
+    else {
+            logado.innerHTML =   '<a class="nav-link text-white" href="usuario/registro.html">Registrar-se</a>';
+        
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+</head>
+<style>
+    body {
+        background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+        background-attachment: fixed;
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+    }
+
+    .main-container {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-top: 30px;
+        margin-bottom: 50px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .search-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 5px solid darkred;
+    }
+
+    .carona-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+
+    .carona-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+
+    .badge-vagas {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    #map {
+        height: 450px;
+        width: 100%;
+        background: #eee;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    .leaflet-routing-container {
+        background-color: white;
+        padding: 10px;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+</style>
+<body>
+
+
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" style="color: white; margin-left: 1vw;" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../home.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../caronas/caronas.html">Caronas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container main-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 id="bem-vindo" class="h3 mb-0">Seja bem-vindo</h1>
+        <button type="button" id="logout" class="btn btn-outline-danger">Sair da Conta</button>
+    </div>
+
+    <div class="search-section">
+        <h2 class="h5 mb-3">Encontre sua Carona</h2>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" id="filtro-origem" class="form-control" placeholder="Onde você está?">
+            </div>
+            <div class="col-md-4">
+                <input type="text" id="filtro-destino" class="form-control" placeholder="Para onde vai?">
+            </div>
+            <div class="col-md-4">
+                <button type="button" id="btn-filtrar" class="btn btn-primary w-100">Filtrar agora</button>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mb-4">Caronas Disponíveis</h3>
+    <div id="carona-list" class="row">
+      
+    </div>
+</div>
+
+<div id="detalhes-carona" style="display: none; background-color: #e7f3ff; padding: 20px; margin: 20px; border-radius: 8px; border-left: 5px solid #0066cc;">
+  <h3>Detalhes da Carona</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <p><strong>Origem:</strong> <span id="detalhe-origem"></span></p>
+      <p><strong>Destino:</strong> <span id="detalhe-destino"></span></p>
+      <p><strong>Título:</strong> <span id="detalhe-titulo"></span></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Descrição:</strong> <span id="detalhe-descricao"></span></p>
+      <p><strong>Mensagem:</strong> <span id="detalhe-mensagem"></span></p>
+      <p><strong>Vagas Disponíveis:</strong> <span id="detalhe-vagas"></span></p>
+      <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
+    </div>
+  </div>
+  <button type="button" class="btn btn-success">Reservar Carona</button>
+  <button type="button" class="btn btn-secondary" onclick="fecharDetalhes()">Fechar</button>
+</div>
+
+// Modal criado para o mapa aparecer
+<div class="modal fade" id="rotaModal" tabindex="-1" aria-labelledby="rotaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rotaModalLabel">Visualizar Rota</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <input type="text" id="inputOrigem" class="form-control" placeholder="Origem">
+                    </div>
+                    <div class="col">
+                        <input type="text" id="inputDestino" class="form-control" placeholder="Destino">
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary" onclick="calculateCustomRoute()">Traçar Rota</button>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+// Importando os scripts do Bootstrap e do Leaflet (Mapa).
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+ <script>
+      document.addEventListener('DOMContentLoaded', function() {       
+          // Verificação de segurança: só entra se estiver logado e com o cargo certo
+          const bemvindo = document.getElementById('bem-vindo');        
+           const nome = sessionStorage.getItem('nome');         
+           const cargo = sessionStorage.getItem('cargo');  
+           const status = sessionStorage.getItem('status');
+           if (status === "espera"){
+            window.location.href = '../home.html';
+           }       
+          else if ((cargo == 'motorista' || cargo == "passageiro" || cargo == "admin")){          
+              bemvindo.innerHTML = `Seja bem-vindo ${nome}`;      
+                    carregarCaronas();     }   
+                      else{             
+                        window.location.href = '../usuario/login.html';        } 
+
+    document.getElementById('btn-filtrar').addEventListener('click', filtrarCaronas);
+
+    });
+async function carregarCaronas() {
+  
+    try {
+        let requisicao = await fetch('../../api/carona.php', { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        console.log("Caronas carregadas:", resposta);
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao carregar caronas:", err);
+    }
+}
+
+async function filtrarCaronas() {
+   
+    try {
+        
+        const origem = document.getElementById('filtro-origem').value;
+        const destino = document.getElementById('filtro-destino').value;
+
+        let url = '../../api/carona.php?'; 
+        if (origem) url += `origem=${origem}&`;
+        if (destino) url += `destino=${destino}&`;
+
+        console.log("URL de filtro:", url);
+
+        let requisicao = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        console.log("Caronas filtradas:", resposta);
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao filtrar caronas:", err);
+    }
+}
+
+function preencherTabelaCaronas(caronas) {
+    
+    const container = document.getElementById('carona-list');
+    container.innerHTML = "";
+
+    if (caronas.length === 0) {
+        container.innerHTML = '<div class="col-12 text-center p-5"><h4>Nenhuma carona encontrada no momento... 🚗</h4></div>';
+        return;
+    }
+
+    caronas.forEach(carona => {
+        container.innerHTML += `
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card carona-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title text-primary">${carona.titulo}</h5>
+                        <span class="badge bg-success badge-vagas">${carona.vagas} vagas</span>
+                    </div>
+                    <p class="card-text text-muted mb-1"><b>De:</b> ${carona.origem}</p>
+                    <p class="card-text text-muted mb-3"><b>Para:</b> ${carona.destino}</p>
+                    <div class="d-grid gap-2 d-md-block">
+                        <button class="btn btn-outline-info btn-sm" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Detalhes</button>
+                        <button class="btn btn-warning btn-sm" onclick="showRoute('${carona.origem}', '${carona.destino}')">Ver Rota</button>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 text-muted small">
+                    Status: <span class="text-uppercase font-weight-bold">${carona.status}</span>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
+let map;
+let routingControl;
+
+// Função que liga o mapa do Leaflet
+function initMap() {
+    if (map) return;
+    map = L.map('map').setView([-25.4290, -49.2671], 12); // Curitiba
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    
+    
+    const modalEl = document.getElementById('rotaModal');
+    if (modalEl) {
+        modalEl.addEventListener('shown.bs.modal', function () {
+            setTimeout(() => { map.invalidateSize(); }, 200); 
+        });
+    }
+}
+
+// Essa função abre o modal e já tenta traçar a rota da carona 
+function showRoute(origem, destino) {
+    const modalEl = document.getElementById('rotaModal');
+    
+    if (!modalEl) {
+        console.error("Erro: Esqueci de colocar o HTML do rotaModal!");
+        return;
+    }
+
+    initMap();
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+
+
+    document.getElementById('inputOrigem').value = origem;
+    document.getElementById('inputDestino').value = destino;
+
+    if (routingControl) { map.removeControl(routingControl); }
+
+    const geocoder = L.Control.Geocoder.nominatim();
+    
+    geocoder.geocode(origem + ", Curitiba", (res1) => {
+        if (res1.length > 0) {
+            geocoder.geocode(destino + ", Curitiba", (res2) => {
+                if (res2.length > 0) {
+                    drawRoute(res1[0].center, res2[0].center, origem, destino);
+                } else { alert("Putz, não achei esse destino em Curitiba!"); }
+            });
+        } else { alert("Ih, não achei essa origem em Curitiba!"); }
+    });
+}
+
+function calculateCustomRoute() {
+    const org = document.getElementById('inputOrigem').value.trim();
+    const dest = document.getElementById('inputDestino').value.trim();
+
+    if (!org || !dest) return alert("Preenche os campos aí! Preciso de origem e destino.");
+
+    // Uso o geocoder pra transformar o texto (ex: Portão) em latitude e longitude
+    const geocoder = L.Control.Geocoder.nominatim();
+    geocoder.geocode(org + ", Curitiba", (res1) => {
+        if (res1.length > 0) {
+            geocoder.geocode(dest + ", Curitiba", (res2) => {
+                if (res2.length > 0) {
+                    // Se achou os dois, chama o desenho da rota "ao vivo"
+                    drawRoute(res1[0].center, res2[0].center, org, dest);
+                } else { alert("Putz, não achei o destino: " + dest); }
+            });
+        } else { alert("Ih, não achei essa origem: " + org); }
+    });
+}
+
+function drawRoute(p1, p2, label1, label2) {
+   
+    if (routingControl) { map.removeControl(routingControl); }
+
+    // Converto os pontos pro formato que o Leaflet entende de verdade
+    const point1 = L.latLng(p1);
+    const point2 = L.latLng(p2);
+
+    routingControl = L.Routing.control({
+        waypoints: [point1, point2],
+        routeWhileDragging: true,
+        language: 'pt-BR',
+        show: false, 
+        fitSelectedRoutes: true, 
+        router: L.Routing.osrmv1({
+            serviceUrl: `https://router.project-osrm.org/route/v1`
+        }),
+        createMarker: function(i, wp) {
+          
+            const iconUrl = i === 0 
+                ? 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png' 
+                : 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png';
+
+            const customIcon = L.icon({
+                iconUrl: iconUrl,
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            return L.marker(wp.latLng, { icon: customIcon })
+                .bindPopup(i === 0 ? "<b>Início:</b> " + label1 : "<b>Destino:</b> " + label2);
+        },
+        lineOptions: { 
+            styles: [{ color: '#FF4500', weight: 9, opacity: 0.9 }] 
+        }
+    }).on('routingerror', function(e) {
+       
+        console.error("Erro no motor de rotas:", e);
+        alert("Não consegui traçar um caminho de carro entre esses dois pontos!");
+    }).addTo(map);
+}
+
+function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas, status) { // Parâmetros atualizados
+    document.getElementById('detalhe-origem').textContent = origem;
+    document.getElementById('detalhe-destino').textContent = destino;
+    document.getElementById('detalhe-titulo').textContent = titulo;
+    document.getElementById('detalhe-descricao').textContent = descricao;
+    document.getElementById('detalhe-mensagem').textContent = mensagem;
+    document.getElementById('detalhe-vagas').textContent = vagas;
+    document.getElementById('detalhe-status').textContent = status;
+   
+    document.getElementById('detalhes-carona').style.display = 'block';
+}
+
+function fecharDetalhes() {
+    document.getElementById('detalhes-carona').style.display = 'none';
+}
+
+
+logoutbtn = document.getElementById("logout");
+logoutbtn.addEventListener('click',logout);
+    function logout(){
+     sessionStorage.clear(); 
+     window.location.href = '../usuario/login.html'; 
+    }
+    </script>
+</body>
+</html>
