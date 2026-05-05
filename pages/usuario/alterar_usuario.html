@@ -77,7 +77,12 @@
             </div>
             <div class="form-group">
                 <label for="status">Status:</label>
-                <input type="text" class="form-control" name="status" id="status">
+                <select class="form-control" name="status" id="status">
+                  <option value="aprovado">Aprovado</option>
+                  <option value="reprovado">Reprovado</option>
+                  <option value="espera">Espera</option>
+                  <option value="banido">Banido</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="doc">Link documentação(crachá e CNH caso motorista):</label>
@@ -127,9 +132,9 @@
             document.getElementById('senha_hash').value = obj.senha_hash;
             document.getElementById('data_nasc').value = obj.data_nasc;
             var e = document.getElementById("cargos");
-            var value = e.value;
+            // var value = e.value; // Esta linha não é mais necessária aqui, pois o valor já é definido abaixo
             e.options[e.selectedIndex].text = obj.cargo;
-            document.getElementById('status').value = obj.status;
+            document.getElementById('status').value = obj.status; // Define o valor selecionado no select
             document.getElementById('doc').value = obj.doc;
     }
 
@@ -144,7 +149,8 @@ btn.addEventListener('click',enviar);
             const data_nasc = document.getElementById('data_nasc').value;
             var e = document.getElementById("cargos");
             var value = e.value;
-            var cargo = e.options[e.selectedIndex].text;
+            var cargo = e.options[e.selectedIndex].text; // Pega o texto visível
+            // Para o select de status, você deve pegar o valor diretamente
             const status = document.getElementById('status').value;
             const doc = document.getElementById('doc').value;
             let requisicao = await fetch(`../../api/usuario.php?id=${id}` , {

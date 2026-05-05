@@ -36,9 +36,9 @@
   </div>
 </nav>
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
-  <div class="card p-4">
+  <div class="card p-4" style="border-radius: 1vw;">
     <h3 class="text-center mb-4">Login</h3>
-    <form>
+    <form id="formLogin">
         <div class="form-group">
         <label for="">Email:</label>
         <input class="form-control" placeholder="Email" type="email" id="email">
@@ -91,12 +91,14 @@
     
             dados = await pegar_dados(email);
             sessionStorage.setItem("nome", dados.nome); 
+            sessionStorage.setItem("cargo", dados.cargo); 
+            sessionStorage.setItem("id", dados.id); 
             resultado.innerHTML = "Usuário logado com sucesso!!";
             await dormir(1500);
             window.location.href = 'gerenciar.html';
         }
     else if(resposta.message == "Login ok") { 
-
+// 
             dados = await pegar_dados(email);
             sessionStorage.setItem("nome", dados.nome);
             sessionStorage.setItem("cargo", dados.cargo); 
@@ -106,10 +108,27 @@
             window.location.href = '../caronas/logado_home.html';
             tela_personalizada();
         }
+        else if (resposta.message == "login n ok"){
+        resultado.innerHTML = "Usuário banido ou restringido!!";
+        await dormir(1500);
+        resultado.innerHTML = "";
+        document.getElementById('formLogin').reset();
+        }
+              else if (resposta.message == "login espera"){
+                    dados = await pegar_dados(email);
+                    sessionStorage.setItem("status", dados.status); 
+        resultado.innerHTML = "Usuário em espera!!";
+        await dormir(1500);
+        resultado.innerHTML = "";
+        window.location.href = '../home.html';
+
+        }
     else {
         resultado.innerHTML = "Email ou senha errados!!";
         await dormir(1500);
         resultado.innerHTML = "";
+        document.getElementById('formLogin').reset();
+        
 
     }
 

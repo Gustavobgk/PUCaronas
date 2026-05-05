@@ -110,10 +110,9 @@
             <td>${usuario.data_nasc}</td>
             <td>${usuario.status}</td>
             <td>${usuario.cargo}</td>
-            <td>${usuario.doc}</td>
-            <td><a href="alterar_usuario.html?id=${usuario.id}">Alterar</a></td>
-            <td><button onclick="deletar(${usuario.id})">Deletar</button></td>
-                
+            <td><img src="${usuario.doc}" alt="${usuario.doc}" width="100px" height="100px"></td>
+            <td><a href="alterar_usuario.html?id=${usuario.id}" class="btn btn-primary btn-sm">Alterar</a></td>
+            <td><button onclick="deletar(${usuario.id})" class="btn btn-danger btn-sm">Deletar</button></td>
                 
             
                 </tr>`

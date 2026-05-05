@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Gerenciar Caronas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
@@ -19,8 +19,8 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link text-white" href="../home.html">Home</a>
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="../home.html">Home </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white" href="../caronas/caronas.html">Caronas</a>
@@ -31,6 +31,7 @@
     </ul>
   </div>
 </nav>
+
     <div>
 <h1 id="bem-vindo" style="margin:1vw;">Seja bem-vindo: </h1>
 <button type="button" id="logout" class="btn btn-danger" style="margin: 1vw;">Log out</button>
@@ -45,9 +46,10 @@
       <input type="text" id="filtro-destino" class="form-control" placeholder="Destino (ex: Prado Velho)">
     </div>
     <div class="col-md-6">
-      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 100%;">Filtrar Caronas</button>
+      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 50%;">Filtrar Caronas</button>
+      <a href="criar_carona.html" class="btn btn-success" style="width: 45%; margin-left: 5px;">Criar Carona</a>
     </div>
-  </div>
+
 </div>
 
 <div style="margin: 20px;">
@@ -62,6 +64,8 @@
         <th scope="col">DESCRIÇÃO</th>
         <th scope="col">VAGAS</th>
         <th scope="col">STATUS</th>
+        <th scope="col">EDITAR</th>
+        <th scope="col">DELETAR</th>
         <th scope="col">AÇÃO</th>
       </tr>
     </thead>
@@ -77,7 +81,6 @@
       <p><strong>Origem:</strong> <span id="detalhe-origem"></span></p>
       <p><strong>Destino:</strong> <span id="detalhe-destino"></span></p>
       <p><strong>Título:</strong> <span id="detalhe-titulo"></span></p>
-        <input type="hidden" id="carona-id-hidden" value="">
     </div>
     <div class="col-md-6">
       <p><strong>Descrição:</strong> <span id="detalhe-descricao"></span></p>
@@ -86,60 +89,36 @@
       <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
     </div>
   </div>
-  <button type="button" class="btn btn-success" id="btn-reservar"  data-toggle="modal" data-target="#exampleModal">Reservar Carona</button>
+  <button type="button" class="btn btn-success">Reservar Carona</button>
   <button type="button" class="btn btn-secondary" onclick="fecharDetalhes()">Fechar</button>
 </div>
 
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Candidatar-se a uma carona</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="mensagem">Escreva sua mensagem para o motorista: </label>
-        <textarea class="form-control" id="mensagem" rows="3"></textarea>
-      </div>
-      <div class="modal-footer">
-        <p5 id="resultado_aplicacao" style="margin-left:2vw"></p5>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary" id="enviar">Enviar</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+
 
 
 
 
  <script>
-async function dormir(tempo) {
-    return new Promise(res => setTimeout(res, tempo));
-}
-
-document.addEventListener('DOMContentLoaded', function() {       
-          const bemvindo = document.getElementById('bem-vindo');        
-           const nome = sessionStorage.getItem('nome');         
-           const cargo = sessionStorage.getItem('cargo');  
-           const status = sessionStorage.getItem('status');
-           if (status === "espera"){
-            window.location.href = '../home.html';
-           }       
-          else if ((cargo == 'motorista' || cargo == "passageiro" || cargo == "admin")){          
-              bemvindo.innerHTML = `Seja bem-vindo ${nome}`;      
-                    carregarCaronas();     }   
-                      else{             
-                        window.location.href = '../usuario/login.html';        } 
+    document.addEventListener('DOMContentLoaded', function() {
+        const bemvindo = document.getElementById('bem-vindo');
+        const nome = sessionStorage.getItem('nome');
+        if (nome == null ){
+            window.location.href = 'login.html';
+    }
+    else{
+           bemvindo.innerHTML = `Seja bem-vindo ${nome}`; 
+           carregarCaronas();
+    }
 
     document.getElementById('btn-filtrar').addEventListener('click', filtrarCaronas);
 
     });
 async function carregarCaronas() {
     try {
+        const idMotoristaLogado = sessionStorage.getItem('id'); // Está linha não exisita 
+        
         let requisicao = await fetch('../../api/carona.php', { 
             method: 'GET',
             headers: {
@@ -147,6 +126,7 @@ async function carregarCaronas() {
             }
         });
         const resposta = await requisicao.json();
+        const caronasDoMotorista = resposta.filter(carona => carona.id_motorista == idMotoristaLogado); // Está linha não existia 
         console.log("Caronas carregadas:", resposta);
         preencherTabelaCaronas(resposta);
     } catch (err) {
@@ -185,12 +165,17 @@ function preencherTabelaCaronas(caronas) {
     const tbody = document.getElementById('tbody-caronas');
     tbody.innerHTML = "";
 
-    if (caronas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
+    const idMotoristaLogado = sessionStorage.getItem('id'); // Está linha não existia
+
+    const caronasF = caronas.filter(carona => carona.id_motorista == idMotoristaLogado); // Está linha não existia | Caronas --> CaronasF
+
+
+    if (caronasF.length === 0) { // caronas --> caronasF
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
         return;
     }
 
-    caronas.forEach(carona => {
+    caronasF.forEach(carona => { //caronas --> caronasF
         tbody.innerHTML += `<tr>
             <td>${carona.id}</td>
             <td>${carona.origem}</td>
@@ -199,9 +184,18 @@ function preencherTabelaCaronas(caronas) {
             <td>${carona.descricao}</td>
             <td>${carona.vagas}</td>
             <td>${carona.status}</td>
+             <td><a href="alterar_carona.html?id=${carona.id}" class="btn btn-primary btn-sm">Alterar</a></td>
+            <td><button onclick="deletar(${carona.id})" class="btn btn-danger btn-sm">Deletar</button></td>
             <td><button class="btn btn-info btn-sm" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Detalhes</button></td>
         </tr>`;
     });
+}
+
+async function deletar(id){
+    await fetch(`../../api/carona.php?id=${id}`, { method: 'DELETE' });
+    tbody = document.getElementById('tbody-caronas');
+    tbody.innerHTML = "";
+    carregarCaronas(); 
 }
 
 
@@ -213,8 +207,7 @@ function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas,
     document.getElementById('detalhe-mensagem').textContent = mensagem;
     document.getElementById('detalhe-vagas').textContent = vagas;
     document.getElementById('detalhe-status').textContent = status;
-    document.getElementById('carona-id-hidden').value = id; 
-    
+   
     document.getElementById('detalhes-carona').style.display = 'block';
 }
 
@@ -229,69 +222,6 @@ logoutbtn.addEventListener('click',logout);
      sessionStorage.clear(); 
      window.location.href = '../usuario/login.html'; 
     }
-
-    document.getElementById('enviar').addEventListener('click', enviar);
-
-async function enviar(){
-
-        const caronaId = document.getElementById('carona-id-hidden').value;
-        const mensagemUsuario = document.getElementById('mensagem').value;
-        const passageiroId = sessionStorage.getItem('id'); // Assumindo que o ID do passageiro está na sessionStorage
-
-        console.log("ID da Carona a ser reservada:", caronaId);
-        console.log("Mensagem do usuário para o motorista:", mensagemUsuario);
-        console.log("ID do Passageiro:", passageiroId);
-
-        if (!passageiroId) {
-            alert("Erro: ID do passageiro não encontrado. Por favor, faça login novamente.");
-            window.location.href = '../usuario/login.html';
-            return;
-        }
-
-        let requisicao = await fetch('../../api/aplicacoes.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id_carona: caronaId, id_passageiro: passageiroId, mensagem: mensagemUsuario })
-        });
-
-        const resposta = await requisicao.json();
-        console.log("Resposta:", resposta);
-
-        if (resposta.message && resposta.message === "aplicacao ok") {
-                document.getElementById('resultado_aplicacao').textContent = "Sua aplicação para a carona foi enviada com sucesso!";       
-                await dormir(1000);
-                $('#exampleModal').modal('hide');
- 
-            
-        } else if (resposta.message && resposta.message == "ja aplicou"){
-                document.getElementById('resultado_aplicacao').textContent = "Você já aplicou para essa carona!";
-                await dormir(1000);
-                $('#exampleModal').modal('hide');
-                  
-
-        }
-        else if(resposta.message && resposta.message == "carona cheia"){
-                document.getElementById('resultado_aplicacao').textContent = "Carona cheia!";
-                await dormir(1000);
-                $('#exampleModal').modal('hide');
-        }
-        else {
-            alert("Erro ao enviar aplicação: " + (resposta.error || "Erro desconhecido."));
-        }
-    $('#exampleModal').on('hidden.bs.modal', function () {
-    $('#mensagem').val('');
-    document.getElementById('resultado_aplicacao').textContent = "";
-
-});
-}
-
-
     </script>
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 </html>

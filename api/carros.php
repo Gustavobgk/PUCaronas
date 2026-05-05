@@ -40,6 +40,12 @@ switch ($method) {
         $modelo = $input['modelo'];
         $placa = $input['placa'];
         $n_assentos = $input['n_assentos'];
+        $check = $conn->query("SELECT id FROM veiculo WHERE placa='$placa'");
+        if ($check->num_rows > 0) {
+            echo json_encode(["message" => "placa"]);
+            break;
+        }
+
         if ($conn->query("INSERT INTO veiculo(id_motorista,modelo,placa,n_assentos) VALUES ('$id_motorista', '$modelo', '$placa', '$n_assentos')")){
             echo json_encode(["message" => "veiculo ok"]);
         }
