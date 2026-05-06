@@ -8,31 +8,29 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 switch ($method) {
     case 'GET':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $result = $conn->query("SELECT * FROM aplicacao WHERE id=$id");
-            $data = $result->fetch_assoc();
-            echo json_encode($data);
-        }
-        else if (isset($_GET['id_motorista'])) {
-            $id_motorista = $_GET['id_motorista'];
-            $result = $conn->query("SELECT * FROM aplicacao WHERE id_motorista=$id_motorista");
+           if (isset($_GET['id_passageiro'])) {
+            $id_passageiro = $_GET['id_passageiro'];
+$result = $conn->query("
+    SELECT 
+        a.id,
+        a.id_passageiro,
+        a.id_carona,
+        a.status,
+        a.mensagem,
+        c.origem,
+        c.titulo,
+        c.destino,
+        c.vagas
+    FROM aplicacao a
+    INNER JOIN carona c ON c.id = a.id_carona
+    WHERE a.id_passageiro = $id_passageiro
+");
             $aplicacoes = [];
             while ($row = $result->fetch_assoc()) {
                 $aplicacoes[] = $row;
             }
-            echo json_encode($carros);
+            echo json_encode($aplicacoes);
             }
-           else if (isset($_GET['id_passageiro'])) {
-            $id_motorista = $_GET['id_passageiro'];
-            $result = $conn->query("SELECT * FROM aplicacao WHERE id_passageiro=$id_passageiro");
-            $aplicacoes = [];
-            while ($row = $result->fetch_assoc()) {
-                $aplicacoes[] = $row;
-            }
-            echo json_encode($carros);
-            }
-        
         else {
             $result = $conn->query("SELECT * FROM aplicacao");
             $users = [];
@@ -55,7 +53,8 @@ switch ($method) {
             break;
         }
 
-        $queryVagas = "select * from carona where id = $id_carona";
+        $queryVagas = "select c.id,c.vagas,a.id_carona from carona c
+left join aplicacao a on c.id = a.id having c.id=$id_carona";
         $result = $conn->query($queryVagas);
         $carona = $result->fetch_assoc();
         $vagas = $carona['vagas'];
@@ -98,4 +97,16 @@ switch ($method) {
 }
 
 $conn->close();
+
+
+
+
+
+
+        // if (isset($_GET['id'])) {
+        //     $id = $_GET['id'];
+        //     $result = $conn->query("SELECT * FROM aplicacao WHERE id=$id");
+        //     $data = $result->fetch_assoc();
+        //     echo json_encode($data);
+        // }
 ?>
