@@ -31,6 +31,21 @@ $result = $conn->query("
             }
             echo json_encode($aplicacoes);
             }
+
+         else  if (isset($_GET['id_motorista'])){
+            $id_motorista = $_GET['id_motorista'];
+            $result = $conn->query("select c.id_motorista,c.titulo,c.id as id_carona,a.id as id_aplicacao,a.id_passageiro,u.id as id_usuario,u.nome,a.status,c.vagas from aplicacao a
+inner join carona c on c.id= a.id_carona
+inner join usuario u on u.id=a.id_passageiro
+WHERE c.id_motorista = $id_motorista");
+ $aplicacoes = [];
+            while ($row = $result->fetch_assoc()) {
+                $aplicacoes[] = $row;
+            }
+            echo json_encode($aplicacoes);
+            
+        
+         }
         else {
             $result = $conn->query("SELECT * FROM aplicacao");
             $users = [];
@@ -74,7 +89,7 @@ left join aplicacao a on c.id = a.id having c.id=$id_carona";
         break;
 
     case 'PUT':  
-        $id = $input['id'];      
+        $id = $_GET['id_aplicacao'];      
         $status = $input['status'];
         if ($id) {
         $conn->query("UPDATE aplicacao SET status = '$status' WHERE id=$id");
