@@ -40,10 +40,7 @@
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
     <div class="card w-100" style="max-width: 500px;">
-        <h3 class="text-center mb-4">Aplicações de Caronas</h3>
-        <div class="text-center mb-3">
-            <a href="../caronas/caronas.html" class="btn btn-primary">Aplicar para mais caronas</a>
-        </div>
+        <h3 id="titulo-aplicacao" class="text-center mb-4"></h3>
         <div id="aplicacoes-lista" class="mb-3">
 
 
@@ -66,8 +63,10 @@
 
  async function receber(){
             try {
+                let params = new URLSearchParams(document.location.search);
+            id_carona = params.get("id_carona");
             id_motorista = sessionStorage.getItem('id');
-            let requisicao = await fetch(`../../api/aplicacoes.php?id_motorista=${id_motorista}` , {
+            let requisicao = await fetch(`../../api/aplicacoes.php?id_motorista=${id_motorista}&id_carona=${id_carona}` , {
                 method: 'GET',
                 headers:{
                     'Content-Type': 'application/json'
@@ -76,12 +75,13 @@
             
         const resposta = await requisicao.json(); 
         console.log("Resposta:", resposta);
-        
+
         const lista = document.getElementById('aplicacoes-lista');
         lista.innerHTML = ""; 
         let contador = 0;
         resposta.forEach(aplicacao => {
-
+        const titulo = document.getElementById('titulo-aplicacao');
+        titulo.innerText = aplicacao.titulo;
         if (aplicacao.status === "pendente"){ // Corrigido: de '=' para '==='
             ap = "Pendente"; 
         }
@@ -94,10 +94,7 @@
             lista.innerHTML += `
                 <div class="card mb-2">
                     <div class="card-body">
-                        <h5 class="card-title mb-1" style = "position: relative;
-  bottom: 2.5vh;
-  font-size: 1.3vw;
-  right: 2vw;">Carona : ${aplicacao.titulo}</h5>
+ 
                         <h5 class="card-subtitle mb-1">Status : ${ap}</h5>
                         <p class="mb-1">Passageiro: <b>${aplicacao.nome}</b></p>
                         <span class="badge badge-primary">${aplicacao.vagas} vagas disponíveis</span>
@@ -126,6 +123,7 @@
 }
 
 async function atualizarStatus(id_aplicacao,status_ap){
+    
     try {
                let requisicao = await fetch(`../../api/aplicacoes.php?id_aplicacao=${id_aplicacao}` , {
                 method: 'PUT',
