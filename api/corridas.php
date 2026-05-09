@@ -18,6 +18,7 @@ $result = $conn->query("SELECT
     co.data_inicio,
     co.data_fim,
     c.titulo,
+    c.id as id_carona,
     GROUP_CONCAT(u.nome SEPARATOR ', ') AS passageiros
 FROM corrida co
 INNER JOIN carona c ON c.id = co.id_carona

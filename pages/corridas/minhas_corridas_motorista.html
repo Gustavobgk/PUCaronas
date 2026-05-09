@@ -42,7 +42,7 @@
     <div class="card w-100" style="max-width: 500px;">
         <h3 class="text-center mb-4">Minhas Corridas</h3>
         <div class="text-center mb-3">
-            <a href="../caronas/gerenciar.html" class="btn btn-primary">Ver minhas corridas</a>
+            <a href="../caronas/gerenciar.html" class="btn btn-primary">Ver minhas Caronas</a>
         </div>
         <div id="corridas-lista" class="mb-3">
 
@@ -82,15 +82,23 @@
         let contador = 0;
         resposta.forEach(corrida => {
 
-        if (corrida.status = "pendente"){
-            ap = "Pendente"; 
-        }
-        else if (corrida.status = "finalizado"){
-            ap = "Finalizado"; 
-        }
-        else if (corrida.status = "Cancelado"){
-            ap = "Cancelado"; 
-        }
+                const labels = {
+        'pendente':     'Pendente',
+        'em_andamento': 'Em andamento',
+        'finalizada':   'Finalizada',
+        'cancelada':    'Cancelada'
+    };
+    const ap = labels[corrida.status] || corrida.status;
+    const botoes = corrida.status === 'pendente' ? `
+        <a href="#" class="btn btn-outline-primary btn-sm ml-2" onclick="atualizarStatus(${corrida.id_carona},'em_andamento')">Iniciar</a>
+        <a href="#" class="btn btn-outline-danger btn-sm ml-2" onclick="atualizarStatus(${corrida.id_carona},'cancelada')">Cancelar</a>
+    ` : corrida.status === 'em_andamento' ? `
+        <a href="#" class="btn btn-outline-info btn-sm ml-2" onclick="atualizarStatus(${corrida.id_carona},'finalizada')">Finalizar</a>
+        <a href="#" class="btn btn-outline-danger btn-sm ml-2" onclick="atualizarStatus(${corrida.id_carona},'cancelada')">Cancelar</a>
+    ` : corrida.status === 'finalizada' ? `
+        <a href="#" class="btn btn-outline-warning btn-sm ml-2" onclick="avaliar(${corrida.id_carona})">Avaliar</a>
+    ` : '';
+
             lista.innerHTML += `
                 <div class="card mb-2">
                     <div class="card-body">
@@ -98,15 +106,20 @@
   bottom: 2.5vh;
   font-size: 1.3vw;
   right: 2vw;">Carona : ${corrida.titulo}</h5>
-                        <h5 class="card-subtitle mb-1">Status : ${ap}</h5>
                         <p class="mb-1">Origem: <b>${corrida.origem}</b></p>
                         <p class="mb-1">Destino: <b>${corrida.destino}</b></p>
                         <p class="mb-1">Passageiros: <b>${corrida.passageiros}</b></p>
                         <span class="badge badge-primary">${ap} </span>
+                        <div class="mt-4 d-flex justify-content-center align-items-center" id="btn-lista">
+                     ${botoes}
+                            </div>
                     </div>
                 </div>
             `;
             contador +=1;
+
+                       
+
         });
 
 
@@ -123,6 +136,32 @@
 
 }
 
+async function atualizarStatus(id_carona,acao){
+try{
+    id_motorista = sessionStorage.getItem('id');
+    let requisicao = await fetch(`../../api/corridas.php?id_carona=${id_carona}&id_motorista=${id_motorista}` , {
+        method: 'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({status: acao})
+                })
+
+                 const resposta = await requisicao.json(); 
+        console.log("Resposta:", resposta);
+        lista = document.getElementById('corridas-lista');
+        lista.innerHTML = "";
+        receber();        
+}
+catch(err){
+    console.log("erro é:" + err);
+    alert(err);
+}
+}
+    // <a href="#" class="ml-2  btn btn-outline-primary" onclick="atualizarStatus(${corrida.id_carona},'em_andamento')" id="iniciar">Iniciar</a>
+    //                     <a href="#" class="ml-2 mr-2 btn btn-outline-info" onclick="atualizarStatus(${corrida.id_carona},'finalizada')" id="finalizar">Finalizar</a>
+    //                     <a href="#" class="ml-2 btn btn-outline-danger" onclick="atualizarStatus(${corrida.id_carona},'cancelada')" id="cancelar">Cancelar</a>
+                    
     </script>
 </body>
 </html>
