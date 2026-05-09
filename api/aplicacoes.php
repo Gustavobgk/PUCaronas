@@ -93,7 +93,7 @@ left join aplicacao a on c.id = a.id having c.id=$id_carona";
         $id = $_GET['id_aplicacao'];      
         $status = $input['status'];
         if ($id) {
-        $conn->query("UPDATE aplicacao SET status = '$status' WHERE id=$id");
+        $conn->query("UPDATE aplicacao SET status = '$status' , data_revisao = NOW() WHERE id=$id");
         echo json_encode(["message" => "aplicacao atualizada"]);
         } 
         else {

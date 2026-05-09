@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Aplicações - Passageiro</title>
+    <title>Minhas Corridas - Motorista</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
 <style>
             .card {
@@ -40,11 +40,11 @@
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
     <div class="card w-100" style="max-width: 500px;">
-        <h3 class="text-center mb-4">Minhas aplicações</h3>
+        <h3 class="text-center mb-4">Minhas Corridas</h3>
         <div class="text-center mb-3">
-            <a href="../caronas/caronas.html" class="btn btn-primary">Aplicar para mais caronas</a>
+            <a href="../caronas/gerenciar.html" class="btn btn-primary">Ver minhas corridas</a>
         </div>
-        <div id="aplicacoes-lista" class="mb-3">
+        <div id="corridas-lista" class="mb-3">
 
 
             
@@ -56,7 +56,7 @@
     const nome = sessionStorage.getItem('nome');
     const cargo = sessionStorage.getItem('cargo');
     const status = sessionStorage.getItem('status');
-    if (cargo !== 'passageiro' && cargo !== 'admin') {
+    if (cargo !== 'motorista' && cargo !== 'admin') {
         window.location.href = '../usuario/login.html';
     }
     receber();
@@ -66,8 +66,8 @@
 
  async function receber(){
             try {
-            id_passageiro = sessionStorage.getItem('id');
-            let requisicao = await fetch(`../../api/aplicacoes.php?id_passageiro=${id_passageiro}` , {
+            id_motorista = sessionStorage.getItem('id');
+            let requisicao = await fetch(`../../api/corridas.php?id_motorista=${id_motorista}` , {
                 method: 'GET',
                 headers:{
                     'Content-Type': 'application/json'
@@ -77,19 +77,19 @@
         const resposta = await requisicao.json(); 
         console.log("Resposta:", resposta);
         
-        const lista = document.getElementById('aplicacoes-lista');
+        const lista = document.getElementById('corridas-lista');
         lista.innerHTML = ""; 
         let contador = 0;
-        resposta.forEach(aplicacao => {
+        resposta.forEach(corrida => {
 
-        if (aplicacao.status = "pendente"){
+        if (corrida.status = "pendente"){
             ap = "Pendente"; 
         }
-        else if (aplicacao.status = "aprovado"){
-            ap = "Aprovado"; 
+        else if (corrida.status = "finalizado"){
+            ap = "Finalizado"; 
         }
-        else if (aplicacao.status = "recusado"){
-            ap = "Recusado"; 
+        else if (corrida.status = "Cancelado"){
+            ap = "Cancelado"; 
         }
             lista.innerHTML += `
                 <div class="card mb-2">
@@ -97,11 +97,12 @@
                         <h5 class="card-title mb-1" style = "position: relative;
   bottom: 2.5vh;
   font-size: 1.3vw;
-  right: 2vw;">Carona : ${aplicacao.titulo}</h5>
+  right: 2vw;">Carona : ${corrida.titulo}</h5>
                         <h5 class="card-subtitle mb-1">Status : ${ap}</h5>
-                        <p class="mb-1">Origem: <b>${aplicacao.origem}</b></p>
-                        <p class="mb-1">Destino: <b>${aplicacao.destino}</b></p>
-                        <span class="badge badge-primary">${aplicacao.vagas} vagas disponíveis</span>
+                        <p class="mb-1">Origem: <b>${corrida.origem}</b></p>
+                        <p class="mb-1">Destino: <b>${corrida.destino}</b></p>
+                        <p class="mb-1">Passageiros: <b>${corrida.passageiros}</b></p>
+                        <span class="badge badge-primary">${ap} </span>
                     </div>
                 </div>
             `;

@@ -4,38 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PUCaronas - Área do Usuário</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <style>
-
         body {
-        
-        background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
-        background-attachment: fixed;
-        min-height: 100vh;
-        margin: 0;
-    }
-
-    
-    .card {
-    margin-top: 10vh;
-    padding: 2rem;
-    border-radius: 1.5rem;
-    background: rgba(255, 255, 255, 0.75) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px);
-    
-    
-    border: 2px solid rgba(255, 255, 255, 0.9) !important;
-    
-    /* essa parte eu fiz para deixar um efeito de vidro estilo macos */
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 
-                inset 0 0 10px rgba(255, 255, 255, 0.5);
-    
-    transition: all 0.3s ease;
-}
-
-
-        
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card {
+            margin-top: 5vh;
+            padding: 3rem;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        .btn-puc {
+            background-color: darkred;
+            border: none;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+        .btn-corrida{
+            background-color: #2F2FE4;
+            border: none;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+        .btn-corrida:hover{
+            background-color: #1A1953;
+            transform: translateY(-2px);
+            color: white;
+        }
+        .btn-puc:hover {
+            background-color: #a00000;
+            transform: translateY(-2px);
+            color: white;
+        }
+        .rounded-pill {
+            border-radius: 50px !important;
+        }
     </style>
 </head>
 <body>
@@ -63,21 +82,23 @@
         <h2 class="mb-4">Bem-vindo ao PUCaronas!</h2>
         <div id="div-passageiro" style="display:none;">
             <p>Você está logado como <b>passageiro</b>.</p>
-            <a href="caronas.html" class="btn btn-primary btn-block">Ver Caronas</a>
+            <a href="caronas.html" class="btn btn-puc btn-block shadow-sm">Explorar Caronas</a>
+            <a href="../aplicacoes/aplicacoes_passageiro.html" class="btn btn-outline-dark btn-block shadow-sm rounded-pill">Minhas Aplicações</a>
         </div>
         <div id="div-motorista" style="display:none;">
             <p>Você está logado como <b>motorista</b>.</p>
-            <a href="caronas.html" class="btn btn-primary btn-block mb-2">Ver Caronas</a>
-            <a href="gerenciar.html" class="btn btn-primary btn-block mb-2">Ver Minhas Caronas</a>
-            <a href="criar_carona.html" class="btn btn-success btn-block">Criar Carona</a>
-            <a href="../carro/meus_carros.html" class="btn btn-info btn-block">Ver meus carros</a>
-            
-           
+            <a href="caronas.html" class="btn btn-puc btn-block mb-3 shadow-sm">Ver Caronas Disponíveis</a>
+            <a href="gerenciar.html" class="btn btn-outline-dark btn-corrida btn-block mb-2 rounded-pill">Gerenciar Minhas Caronas</a>
+            <a href="../corridas/minhas_corridas_motorista.html" class="btn btn-outline-dark btn-block mb-2 rounded-pill">Gerenciar Minhas Corridas</a>
+            <a href="criar_carona.html" class="btn btn-success btn-block mb-2 rounded-pill font-weight-bold">Criar Nova Carona</a>
+            <a href="../carro/meus_carros.html" class="btn btn-info btn-block rounded-pill text-white">Meus Veículos</a>
         </div>
-               <div id="div-admin" style="display:none;">
-            <p>Você está logado como <b>ADMIN</b>.</p>
-            <a href="caronas.html" class="btn btn-primary btn-block mb-2">Ver Caronas</a>  
-           
+        <div id="div-admin" style="display:none;">
+            <p class="h4 mb-3">Painel de <b>ADMINISTRADOR</b></p>
+            <div class="alert alert-info py-2 small">Central de Controle e Moderação</div>
+            <a href="caronas.html" class="btn btn-puc btn-block mb-3 shadow">Monitorar Todas as Caronas</a>
+            <a href="../usuario/gerenciar.html" class="btn btn-outline-dark btn-block mb-2 rounded-pill">Aprovar Usuários / Documentos</a>
+            <p class="text-muted mt-3 small">Status: Sistema Online</p>
         </div>
     </div>
 </div>

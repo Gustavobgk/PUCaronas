@@ -7,12 +7,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <style>
         .card {
             margin-top: 5vh;
             padding: 2rem;
             border-radius: 1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .card-carona {
+            transition: transform 0.2s;
+            border-left: 5px solid darkred;
+        }
+        .card-carona:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         body {
             background-color: #f8f9fa;
@@ -24,6 +33,21 @@
         #map {
             height: 500px;
             width: 100%;
+        }
+        .leaflet-routing-container {
+            background-color: white;
+            padding: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        /* Estilos adicionais para garantir visibilidade dos botões */
+        .card-carona .btn-info {
+            background-color: #17a2b8 !important; /* Azul claro forte */
+            color: white !important; /* Texto branco */
+            font-weight: bold !important; /* Negrito */
+            font-size: 1.1rem !important; /* Aumenta o tamanho da fonte */
+            padding: 0.6rem 1.2rem !important; /* Aumenta o preenchimento */
+            border-radius: 0.5rem !important; /* Arredonda as bordas */
         }
     </style>
 </head>
@@ -65,22 +89,24 @@
         </form>
         <div class="carona-lista">
             <!-- lista com as caronas -->
-            <div class="card mb-3">
+            <div class="card mb-3 card-carona">
                 <div class="card-body">
                     <h5 class="card-title">PUC para Centro</h5>
                     <p class="card-text font-weight-bold">Saída: 18h | Vagas: 3 | Motorista: João | Veículo: Fiat Uno</p>
                     <p class="card-text">Descrição: Carona para o centro após as aulas. Bagagem pequena permitida.</p>
                     <p class="card-text"><small class="text-muted">Origem: PUC | Destino: Centro</small></p>
-                    <button class="btn btn-outline-info mt-2" onclick="showRoute('PUC', 'Centro')">Ver rota</button>
+                    <button class="btn btn-secondary mt-2 mr-2 shadow-sm">Ver detalhes</button>
+                    <button class="btn btn-info mt-2 shadow-sm" onclick="showRoute('PUC PR, Curitiba', 'Centro, Curitiba')">Ver rota</button>
                 </div>
             </div>
-            <div class="card mb-3">
+            <div class="card mb-3 card-carona">
                 <div class="card-body">
                     <h5 class="card-title">Centro para PUC</h5>
                     <p class="card-text font-weight-bold">Saída: 7h | Vagas: 2 | Motorista: Maria | Veículo: VW Gol</p>
                     <p class="card-text">Descrição: Ida para a PUC pela manhã, carona diária durante o semestre.</p>
                     <p class="card-text"><small class="text-muted">Origem: Centro | Destino: PUC</small></p>
-                    <button class="btn btn-outline-info mt-2" onclick="showRoute('Centro', 'PUC')">Ver rota</button>
+                    <button class="btn btn-secondary mt-2 mr-2 shadow-sm">Ver detalhes</button>
+                    <button class="btn btn-info mt-2 shadow-sm" onclick="showRoute('Centro, Curitiba', 'PUC PR, Curitiba')">Ver rota</button>
                 </div>
             </div>
             
@@ -90,7 +116,7 @@
 
 <!-- Modal para visualizar rota -->
 <div class="modal fade" id="rotaModal" tabindex="-1" role="dialog" aria-labelledby="rotaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rotaModalLabel">Visualizar Rota</h5>
@@ -99,7 +125,20 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="map" style="height: 400px;"></div>
+                <div class="form-row mb-3 bg-light p-3 rounded shadow-sm">
+                    <div class="col-md-5">
+                        <label class="small font-weight-bold">Início do trajeto</label>
+                        <input type="text" id="routeOrigin" class="form-control" placeholder="Origem...">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="small font-weight-bold">Final do trajeto</label>
+                        <input type="text" id="routeDest" class="form-control" placeholder="Destino...">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-success btn-block" onclick="calculateCustomRoute()">Traçar Rota</button>
+                    </div>
+                </div>
+                <div id="map" style="height: 550px; border-radius: 15px; border: 2px solid #ddd;"></div>
             </div>
         </div>
     </div>
@@ -114,7 +153,7 @@
     let routingControl;
 
     function initMap() {
-        map = L.map('map').setView([-23.5505, -46.6333], 10);
+        map = L.map('map').setView([-25.4426, -49.2608], 12); // Foco em Curitiba
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
@@ -122,53 +161,43 @@
     }
 
     function showRoute(origem, destino) {
+        document.getElementById('routeOrigin').value = origem;
+        document.getElementById('routeDest').value = destino;
+
+        $('#rotaModal').modal('show');
+        
+        // Pequeno atraso para garantir que o mapa carregue o tamanho correto dentro do modal
+        setTimeout(() => {
+            map.invalidateSize();
+            calculateCustomRoute();
+        }, 500);
+    }
+
+    function calculateCustomRoute() {
+        const originStr = document.getElementById('routeOrigin').value;
+        const destStr = document.getElementById('routeDest').value;
+
         if (routingControl) {
             map.removeControl(routingControl);
         }
 
-        // Coordenadas hardcoded
-        const coords = {
-            'PUC': [-23.5596, -46.7318],
-            'Centro': [-23.5505, -46.6333]
-        };
-
-        const originCoords = coords[origem];
-        const destCoords = coords[destino];
-
-        if (originCoords && destCoords) {
-            routingControl = L.Routing.control({
-                waypoints: [
-                    L.latLng(originCoords[0], originCoords[1]),
-                    L.latLng(destCoords[0], destCoords[1])
-                ],
-                routeWhileDragging: false,
-                createMarker: function(i, waypoint, n) {
-                    const marker = L.marker(waypoint.latLng);
-                    if (i === 0) marker.bindPopup('Origem: ' + origem).openPopup();
-                    else if (i === n-1) marker.bindPopup('Destino: ' + destino).openPopup();
-                    return marker;
-                },
-                lineOptions: {
-                    styles: [{ color: 'blue', weight: 6, opacity: 0.8 }]
-                },
-                show: false
-            }).addTo(map);
-
-            setTimeout(() => {
-                const bounds = routingControl.getBounds();
-                if (bounds) {
-                    map.fitBounds(bounds);
-                }
-            }, 1000);
-        }
-
-        $('#rotaModal').modal('show');
+        routingControl = L.Routing.control({
+            waypoints: [
+                L.Routing.waypoint(null, originStr),
+                L.Routing.waypoint(null, destStr)
+            ],
+            geocoder: L.Control.Geocoder.nominatim(),
+            language: 'pt-BR',
+            routeWhileDragging: true,
+            show: true
+        }).addTo(map);
     }
 
     window.onload = initMap;
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>

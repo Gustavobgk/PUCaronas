@@ -1,19 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Caronas Disponíveis - PUCaronas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: #333;
+        }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .carona-card {
+            background: white;
+            border-radius: 15px;
+            border-left: 8px solid darkred;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .carona-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+        }
+        .badge-vagas {
+            background-color: darkred;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        #map {
+            height: 550px;
+            border-radius: 15px;
+            border: 2px solid #ddd;
+        }
+        .modal-xl {
+            max-width: 90%;
+        }
+        .route-inputs {
+            background: #ffffff;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+        .route-inputs label {
+            color: #555;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .route-inputs .form-control {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+        .route-inputs .form-control:focus {
+            border-color: darkred;
+            box-shadow: 0 0 0 0.2rem rgba(139, 0, 0, 0.15);
+        }
+    </style>
 </head>
-<style>
-
-</style>
 <body>
-
-
 <nav class="navbar navbar-expand-lg" style="background-color: darkred;">
-  <a class="navbar-brand text-white" style="color: white; margin-left: 1vw;" href="#">PUCaronas</a>
+  <a class="navbar-brand text-white fw-bold" style="margin-left: 1vw;" href="#">PUCaronas</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -31,46 +108,37 @@
     </ul>
   </div>
 </nav>
-    <div>
-<h1 id="bem-vindo" style="margin:1vw;">Seja bem-vindo: </h1>
-<button type="button" id="logout" class="btn btn-danger" style="margin: 1vw;">Log out</button>
 
-<div style="background-color: #f8f9fa; padding: 20px; margin: 20px; border-radius: 8px;">
-  <h2>Buscar Caronas</h2>
-  <div class="row" style="margin-bottom: 15px;">
-    <div class="col-md-3">
-      <input type="text" id="filtro-origem" class="form-control" placeholder="Origem (ex: Portão)">
+<div class="container mb-5">
+    <div class="glass-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 id="bem-vindo" class="h3 fw-bold m-0">Seja bem-vindo</h1>
+            <button type="button" id="logout" class="btn btn-outline-danger btn-sm rounded-pill px-4">Log out</button>
+        </div>
+
+        <div class="p-4 rounded-4 mb-4" style="background: rgba(248, 249, 250, 0.7);">
+            <h2 class="h5 fw-bold mb-3 text-dark">Buscar Caronas</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" id="filtro-origem" class="form-control rounded-pill" placeholder="Origem (ex: Portão)">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="filtro-destino" class="form-control rounded-pill" placeholder="Destino (ex: Prado Velho)">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" id="btn-filtrar" class="btn btn-danger w-100 rounded-pill fw-bold">Filtrar Caronas</button>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="h5 fw-bold mb-4">Caronas Disponíveis</h3>
+        <div id="tbody-caronas" class="row">
+            <!-- Cards serão inseridos aqui -->
+        </div>
     </div>
-    <div class="col-md-3">
-      <input type="text" id="filtro-destino" class="form-control" placeholder="Destino (ex: Prado Velho)">
-    </div>
-    <div class="col-md-6">
-      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 100%;">Filtrar Caronas</button>
-    </div>
-  </div>
 </div>
 
-<div style="margin: 20px;">
-  <h3>Caronas Disponíveis</h3>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">ORIGEM</th>
-        <th scope="col">DESTINO</th>
-        <th scope="col">TÍTULO</th>
-        <th scope="col">DESCRIÇÃO</th>
-        <th scope="col">VAGAS</th>
-        <th scope="col">STATUS</th>
-        <th scope="col">AÇÃO</th>
-      </tr>
-    </thead>
-    <tbody id="tbody-caronas">
-    </tbody>
-  </table>
-</div>
-
-<div id="detalhes-carona" style="display: none; background-color: #e7f3ff; padding: 20px; margin: 20px; border-radius: 8px; border-left: 5px solid #0066cc;">
+<div id="detalhes-carona" class="container" style="display: none; background-color: #e7f3ff; padding: 25px; margin-bottom: 30px; border-radius: 20px; border-left: 10px solid #0066cc; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
   <h3>Detalhes da Carona</h3>
   <div class="row">
     <div class="col-md-6">
@@ -86,8 +154,37 @@
       <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
     </div>
   </div>
-  <button type="button" class="btn btn-success" id="btn-reservar"  data-toggle="modal" data-target="#exampleModal">Reservar Carona</button>
+  <button type="button" class="btn btn-success" id="btn-reservar"  data-bs-toggle="modal" data-bs-target="#exampleModal">Reservar Carona</button>
   <button type="button" class="btn btn-secondary" onclick="fecharDetalhes()">Fechar</button>
+</div>
+
+<div class="modal fade" id="rotaModal" tabindex="-1" role="dialog" aria-labelledby="rotaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rotaModalLabel">Visualizar Rota</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row route-inputs">
+                    <div class="col-md-5">
+                        <label class="font-weight-bold">Ponto de Partida</label>
+                        <input type="text" id="routeOrigin" class="form-control" placeholder="Ex: Rua Imaculada Conceição, 1155">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="font-weight-bold">Destino Final</label>
+                        <input type="text" id="routeDest" class="form-control" placeholder="Ex: Shopping Estação, Curitiba">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-success btn-block py-2 font-weight-bold" onclick="calculateCustomRoute()">Traçar Rota</button>
+                    </div>
+                </div>
+                <div id="map" style="height: 550px; border-radius: 15px; border: 2px solid #ddd;"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -96,8 +193,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Candidatar-se a uma carona</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
         </button>
       </div>
       <div class="modal-body">
@@ -106,7 +203,7 @@
       </div>
       <div class="modal-footer">
         <p5 id="resultado_aplicacao" style="margin-left:2vw"></p5>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
         <button type="button" class="btn btn-primary" id="enviar">Enviar</button>
       </div>
     </div>
@@ -117,6 +214,10 @@
 
 
  <script>
+let map = null;
+let routingControl = null;
+
+
 async function dormir(tempo) {
     return new Promise(res => setTimeout(res, tempo));
 }
@@ -147,7 +248,6 @@ async function carregarCaronas() {
             }
         });
         const resposta = await requisicao.json();
-        console.log("Caronas carregadas:", resposta);
         preencherTabelaCaronas(resposta);
     } catch (err) {
         console.log("Erro ao carregar caronas:", err);
@@ -165,8 +265,6 @@ async function filtrarCaronas() {
         if (origem) url += `origem=${origem}&`;
         if (destino) url += `destino=${destino}&`;
 
-        console.log("URL de filtro:", url);
-
         let requisicao = await fetch(url, {
             method: 'GET',
             headers: {
@@ -174,7 +272,6 @@ async function filtrarCaronas() {
             }
         });
         const resposta = await requisicao.json();
-        console.log("Caronas filtradas:", resposta);
         preencherTabelaCaronas(resposta);
     } catch (err) {
         console.log("Erro ao filtrar caronas:", err);
@@ -186,26 +283,34 @@ function preencherTabelaCaronas(caronas) {
     tbody.innerHTML = "";
 
     if (caronas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
+        tbody.innerHTML = '<div class="col-12 text-center py-5"><p class="text-white">Nenhuma carona encontrada</p></div>';
         return;
     }
 
     caronas.forEach(carona => {
-        tbody.innerHTML += `<tr>
-            <td>${carona.id}</td>
-            <td>${carona.origem}</td>
-            <td>${carona.destino}</td>
-            <td>${carona.titulo}</td>
-            <td>${carona.descricao}</td>
-            <td>${carona.vagas}</td>
-            <td>${carona.status}</td>
-            <td><button class="btn btn-info btn-sm" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Detalhes</button></td>
-        </tr>`;
+        tbody.innerHTML += `
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="carona-card p-4 h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="fw-bold text-dark m-0">${carona.titulo}</h5>
+                    <span class="badge-vagas">${carona.vagas} vagas</span>
+                </div>
+                <p class="text-muted small mb-3 flex-grow-1">${carona.descricao}</p>
+                <div class="mb-3">
+                    <div class="small"><strong>De:</strong> ${carona.origem}</div>
+                    <div class="small"><strong>Para:</strong> ${carona.destino}</div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-info btn-sm flex-grow-1 rounded-pill text-white fw-bold" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Detalhes</button>
+                    <button class="btn btn-danger btn-sm flex-grow-1 rounded-pill fw-bold" onclick="showRoute('${carona.origem}, Curitiba', '${carona.destino}, Curitiba')">Ver Rota</button>
+                </div>
+            </div>
+        </div>`;
     });
 }
 
 
-function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas, status) { // Parâmetros atualizados
+function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas, status) {
     document.getElementById('detalhe-origem').textContent = origem;
     document.getElementById('detalhe-destino').textContent = destino;
     document.getElementById('detalhe-titulo').textContent = titulo;
@@ -232,18 +337,62 @@ logoutbtn.addEventListener('click',logout);
 
     document.getElementById('enviar').addEventListener('click', enviar);
 
+    function initMap() {
+        if (document.getElementById('map') && !map) {
+            map = L.map('map').setView([-25.4426, -49.2608], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+    }
+
+    function showRoute(origem, destino) {
+        if (!map) {
+            initMap();
+        }
+
+        document.getElementById('routeOrigin').value = origem;
+        document.getElementById('routeDest').value = destino;
+
+        const myModal = new bootstrap.Modal(document.getElementById('rotaModal'));
+        myModal.show();
+        
+        setTimeout(() => {
+            map.invalidateSize();
+            calculateCustomRoute();
+        }, 500);
+    }
+
+    function calculateCustomRoute() {
+        const originStr = document.getElementById('routeOrigin').value;
+        const destStr = document.getElementById('routeDest').value;
+
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        routingControl = L.Routing.control({
+            waypoints: [
+                L.Routing.waypoint(null, originStr),
+                L.Routing.waypoint(null, destStr)
+            ],
+            geocoder: L.Control.Geocoder.nominatim(),
+            language: 'pt-BR',
+            routeWhileDragging: true,
+            show: false,
+            lineOptions: { styles: [{ color: '#FF8C00', weight: 9, opacity: 0.9 }] }
+        }).addTo(map);
+    }
+
 async function enviar(){
 
         const caronaId = document.getElementById('carona-id-hidden').value;
         const mensagemUsuario = document.getElementById('mensagem').value;
-        const passageiroId = sessionStorage.getItem('id'); // Assumindo que o ID do passageiro está na sessionStorage
-
-        console.log("ID da Carona a ser reservada:", caronaId);
-        console.log("Mensagem do usuário para o motorista:", mensagemUsuario);
-        console.log("ID do Passageiro:", passageiroId);
+        const passageiroId = sessionStorage.getItem('id');
 
         if (!passageiroId) {
-            alert("Erro: ID do passageiro não encontrado. Por favor, faça login novamente.");
+            alert("Sessão expirada. Por favor, faça login novamente.");
             window.location.href = '../usuario/login.html';
             return;
         }
@@ -257,41 +406,41 @@ async function enviar(){
         });
 
         const resposta = await requisicao.json();
-        console.log("Resposta:", resposta);
-
         if (resposta.message && resposta.message === "aplicacao ok") {
                 document.getElementById('resultado_aplicacao').textContent = "Sua aplicação para a carona foi enviada com sucesso!";       
                 await dormir(1000);
-                $('#exampleModal').modal('hide');
+                bootstrap.Modal.getInstance(document.getElementById('exampleModal')).hide();
  
             
         } else if (resposta.message && resposta.message == "ja aplicou"){
                 document.getElementById('resultado_aplicacao').textContent = "Você já aplicou para essa carona!";
                 await dormir(1000);
-                $('#exampleModal').modal('hide');
+                bootstrap.Modal.getInstance(document.getElementById('exampleModal')).hide();
                   
 
         }
         else if(resposta.message && resposta.message == "carona cheia"){
                 document.getElementById('resultado_aplicacao').textContent = "Carona cheia!";
                 await dormir(1000);
-                $('#exampleModal').modal('hide');
+                bootstrap.Modal.getInstance(document.getElementById('exampleModal')).hide();
         }
         else {
             alert("Erro ao enviar aplicação: " + (resposta.error || "Erro desconhecido."));
         }
-    $('#exampleModal').on('hidden.bs.modal', function () {
+    
+    document.getElementById('exampleModal').addEventListener('hidden.bs.modal', function () {
     $('#mensagem').val('');
     document.getElementById('resultado_aplicacao').textContent = "";
-
-});
+    });
 }
+    document.getElementById('rotaModal').addEventListener('shown.bs.modal', function () {
+        initMap();
+        if (map) map.invalidateSize();
+    });
+
 
 
     </script>
 
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 </html>

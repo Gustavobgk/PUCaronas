@@ -10,13 +10,21 @@ $action = $_GET['action'] ?? '';
 
 switch ($method) {
     case 'GET':
-        if (isset($_GET['id'])) {
+        if ($action === 'listar_espera') {
+            $result = $conn->query("SELECT * FROM usuario WHERE status='espera'");
+            $users = [];
+            while ($row = $result->fetch_assoc()) {
+                $users[] = $row;
+            }
+            echo json_encode($users);
+        }
+        elseif (isset($_GET['id'])) {
             $id = $_GET['id'];
             $result = $conn->query("SELECT * FROM usuario WHERE id=$id");
             $data = $result->fetch_assoc();
             echo json_encode($data);
         }
-        elseif (isset($_GET['email'])) { 
+        elseif (isset($_GET['email'])) {
         $email = $_GET['email'];
         $result = $conn->query("SELECT * FROM usuario WHERE email='$email'");
         $data = $result->fetch_assoc();
@@ -50,6 +58,24 @@ switch ($method) {
         }
             break;
         
+        case 'aprovar':
+            $id_usuario = $input['id_usuario'];
+            if ($conn->query("UPDATE usuario SET status='aprovado' WHERE id=$id_usuario")) {
+                echo json_encode(["message" => "sucesso"]);
+            } else {
+                echo json_encode(["error" => $conn->error]);
+            }
+            break;
+        
+        case 'rejeitar':
+            $id_usuario = $input['id_usuario'];
+            if ($conn->query("UPDATE usuario SET status='reprovado' WHERE id=$id_usuario")) {
+                echo json_encode(["message" => "sucesso"]);
+            } else {
+                echo json_encode(["error" => $conn->error]);
+            }
+            break;
+
         case 'login':
 
                 $email = $input['email'];

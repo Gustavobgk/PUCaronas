@@ -1,29 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Caronas</title>
+    <title>Gerenciar Minhas Caronas - PUCaronas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 35px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .carona-card {
+            background: white;
+            border-radius: 20px;
+            border-left: 10px solid darkred;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-top: none; border-right: none; border-bottom: none;
+        }
+
+        .carona-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .badge-vagas {
+            background-color: darkred;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
 </head>
-<style>
-
-</style>
 <body>
-
-
 <nav class="navbar navbar-expand-lg" style="background-color: darkred;">
-  <a class="navbar-brand text-white" style="color: white; margin-left: 1vw;" href="#">PUCaronas</a>
+  <a class="navbar-brand text-white fw-bold" style="margin-left: 1vw;" href="#">PUCaronas</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link text-white" href="../home.html">Home </a>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="logado_home.html">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white" href="../caronas/caronas.html">Caronas</a>
+        <a class="nav-link text-white" href="caronas.html">Caronas</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
@@ -32,65 +72,55 @@
   </div>
 </nav>
 
-    <div>
-<h1 id="bem-vindo" style="margin:1vw;">Seja bem-vindo: </h1>
-<button type="button" id="logout" class="btn btn-danger" style="margin: 1vw;">Log out</button>
+<div class="container mb-5">
+    <div class="glass-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 id="bem-vindo" class="h3 fw-bold m-0">Suas Ofertas</h1>
+            <button type="button" id="logout" class="btn btn-outline-danger btn-sm rounded-pill px-4">Sair</button>
+        </div>
 
-<div style="background-color: #f8f9fa; padding: 20px; margin: 20px; border-radius: 8px;">
-  <h2>Buscar Caronas</h2>
-  <div class="row" style="margin-bottom: 15px;">
-    <div class="col-md-3">
-      <input type="text" id="filtro-origem" class="form-control" placeholder="Origem (ex: Portão)">
-    </div>
-    <div class="col-md-3">
-      <input type="text" id="filtro-destino" class="form-control" placeholder="Destino (ex: Prado Velho)">
-    </div>
-    <div class="col-md-6">
-      <button type="button" id="btn-filtrar" class="btn btn-primary" style="width: 50%;">Filtrar Caronas</button>
-      <a href="criar_carona.html" class="btn btn-success" style="width: 45%; margin-left: 5px;">Criar Carona</a>
-    </div>
+        <div class="p-4 rounded-4 mb-4" style="background: rgba(248, 249, 250, 0.6);">
+            <h2 class="h5 fw-bold mb-3 text-dark">Filtrar Minhas Caronas</h2>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" id="filtro-origem" class="form-control rounded-pill" placeholder="Origem">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" id="filtro-destino" class="form-control rounded-pill" placeholder="Destino">
+                </div>
+                <div class="col-md-6 d-flex gap-2">
+                    <button type="button" id="btn-filtrar" class="btn btn-danger flex-grow-1 rounded-pill fw-bold">Buscar</button>
+                    <a href="criar_carona.html" class="btn btn-success flex-grow-1 rounded-pill fw-bold">Nova Carona</a>
+                </div>
+            </div>
+        </div>
 
+        <h3 class="h5 fw-bold mb-4 text-secondary">Caronas que você cadastrou</h3>
+        <div id="tbody-caronas" class="row">
+            <!-- Blocos de cards inseridos via JS -->
+        </div>
+    </div>
 </div>
 
-<div style="margin: 20px;">
-  <h3>Caronas Disponíveis</h3>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">ORIGEM</th>
-        <th scope="col">DESTINO</th>
-        <th scope="col">TÍTULO</th>
-        <th scope="col">DESCRIÇÃO</th>
-        <th scope="col">VAGAS</th>
-        <th scope="col">STATUS</th>
-        <th scope="col">EDITAR</th>
-        <th scope="col">DELETAR</th>
-        <th scope="col">AÇÃO</th>
-      </tr>
-    </thead>
-    <tbody id="tbody-caronas">
-    </tbody>
-  </table>
-</div>
-
-<div id="detalhes-carona" style="display: none; background-color: #e7f3ff; padding: 20px; margin: 20px; border-radius: 8px; border-left: 5px solid #0066cc;">
+<div id="detalhes-carona" class="container" style="display: none; background: white; padding: 30px; margin-bottom: 40px; border-radius: 25px; border-left: 10px solid darkred; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
   <h3>Detalhes da Carona</h3>
-  <div class="row">
+  <div class="row text-dark">
     <div class="col-md-6">
-      <p><strong>Origem:</strong> <span id="detalhe-origem"></span></p>
-      <p><strong>Destino:</strong> <span id="detalhe-destino"></span></p>
-      <p><strong>Título:</strong> <span id="detalhe-titulo"></span></p>
+      <p class="mb-2"><strong>Partida:</strong> <span id="detalhe-origem" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Chegada:</strong> <span id="detalhe-destino" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Título:</strong> <span id="detalhe-titulo" class="text-muted"></span></p>
     </div>
     <div class="col-md-6">
-      <p><strong>Descrição:</strong> <span id="detalhe-descricao"></span></p>
-      <p><strong>Mensagem:</strong> <span id="detalhe-mensagem"></span></p>
-      <p><strong>Vagas Disponíveis:</strong> <span id="detalhe-vagas"></span></p>
-      <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
+      <p class="mb-2"><strong>Sobre:</strong> <span id="detalhe-descricao" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Aviso:</strong> <span id="detalhe-mensagem" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Vagas:</strong> <span id="detalhe-vagas" class="badge bg-danger"></span></p>
+      <p class="mb-2"><strong>Situação:</strong> <span id="detalhe-status" class="text-uppercase fw-bold text-success"></span></p>
     </div>
   </div>
-  <button type="button" class="btn btn-success">Reservar Carona</button>
-  <button type="button" class="btn btn-secondary" onclick="fecharDetalhes()">Fechar</button>
+  <div class="mt-4 d-flex gap-2">
+          <button type="button" class="btn btn-primary rounded-pill px-4"><a class="text-reset text-decoration-none" id="verCandidaturas">Ver Candidaturas</a></button>
+      <button type="button" class="btn btn-secondary rounded-pill px-4" onclick="fecharDetalhes()">Ocultar Detalhes</button>
+  </div>
 </div>
 
 
@@ -117,7 +147,7 @@
     });
 async function carregarCaronas() {
     try {
-        const idMotoristaLogado = sessionStorage.getItem('id'); // Está linha não exisita 
+        const idMotoristaLogado = sessionStorage.getItem('id');
         
         let requisicao = await fetch('../../api/carona.php', { 
             method: 'GET',
@@ -126,8 +156,7 @@ async function carregarCaronas() {
             }
         });
         const resposta = await requisicao.json();
-        const caronasDoMotorista = resposta.filter(carona => carona.id_motorista == idMotoristaLogado); // Está linha não existia 
-        console.log("Caronas carregadas:", resposta);
+        const caronasDoMotorista = resposta.filter(carona => carona.id_motorista == idMotoristaLogado);
         preencherTabelaCaronas(resposta);
     } catch (err) {
         console.log("Erro ao carregar caronas:", err);
@@ -145,8 +174,6 @@ async function filtrarCaronas() {
         if (origem) url += `origem=${origem}&`;
         if (destino) url += `destino=${destino}&`;
 
-        console.log("URL de filtro:", url);
-
         let requisicao = await fetch(url, {
             method: 'GET',
             headers: {
@@ -154,7 +181,6 @@ async function filtrarCaronas() {
             }
         });
         const resposta = await requisicao.json();
-        console.log("Caronas filtradas:", resposta);
         preencherTabelaCaronas(resposta);
     } catch (err) {
         console.log("Erro ao filtrar caronas:", err);
@@ -165,29 +191,35 @@ function preencherTabelaCaronas(caronas) {
     const tbody = document.getElementById('tbody-caronas');
     tbody.innerHTML = "";
 
-    const idMotoristaLogado = sessionStorage.getItem('id'); // Está linha não existia
+    const idMotoristaLogado = sessionStorage.getItem('id');
 
-    const caronasF = caronas.filter(carona => carona.id_motorista == idMotoristaLogado); // Está linha não existia | Caronas --> CaronasF
+    const caronasF = caronas.filter(carona => carona.id_motorista == idMotoristaLogado);
 
 
-    if (caronasF.length === 0) { // caronas --> caronasF
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Nenhuma carona encontrada</td></tr>'; // Colspan ajustado
+    if (caronasF.length === 0) {
+        tbody.innerHTML = '<div class="col-12 text-center py-5"><p class="text-white">Você ainda não criou nenhuma carona.</p></div>';
         return;
     }
 
-    caronasF.forEach(carona => { //caronas --> caronasF
-        tbody.innerHTML += `<tr>
-            <td>${carona.id}</td>
-            <td>${carona.origem}</td>
-            <td>${carona.destino}</td>
-            <td>${carona.titulo}</td>
-            <td>${carona.descricao}</td>
-            <td>${carona.vagas}</td>
-            <td>${carona.status}</td>
-             <td><a href="alterar_carona.html?id=${carona.id}" class="btn btn-primary btn-sm">Alterar</a></td>
-            <td><button onclick="deletar(${carona.id})" class="btn btn-danger btn-sm">Deletar</button></td>
-            <td><button class="btn btn-info btn-sm" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Detalhes</button></td>
-        </tr>`;
+    caronasF.forEach(carona => {
+        tbody.innerHTML += `
+        <div class="col-md-6">
+            <div class="carona-card p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-bold text-dark m-0">${carona.titulo}</h5>
+                    <span class="badge-vagas">${carona.vagas} Vagas</span>
+                </div>
+                <div class="mb-3 text-secondary small">
+                    <div><strong>Rota:</strong> ${carona.origem} → ${carona.destino}</div>
+                    <div><strong>Status:</strong> <span class="text-uppercase">${carona.status}</span></div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="alterar_carona.html?id=${carona.id}" class="btn btn-primary btn-sm rounded-pill px-4">Editar</a>
+                    <button onclick="deletar(${carona.id})" class="btn btn-outline-danger btn-sm rounded-pill px-4">Excluir</button>
+                    <button class="btn btn-info btn-sm rounded-pill px-4 text-white" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Mais</button>
+                </div>
+            </div>
+        </div>`;
     });
 }
 
@@ -207,8 +239,9 @@ function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas,
     document.getElementById('detalhe-mensagem').textContent = mensagem;
     document.getElementById('detalhe-vagas').textContent = vagas;
     document.getElementById('detalhe-status').textContent = status;
-   
+    document.getElementById('verCandidaturas').href = `../aplicacoes/aplicacoes_motorista.html?id_carona=${id}`;
     document.getElementById('detalhes-carona').style.display = 'block';
+
 }
 
 function fecharDetalhes() {
