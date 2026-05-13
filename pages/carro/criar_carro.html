@@ -79,6 +79,21 @@ dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
             const modelo = document.getElementById('modelo').value;
             const placa = document.getElementById('placa').value;
             const n_assentos = document.getElementById('n_assentos').value;
+            const resultado = document.getElementById('resultado');
+
+            if (!modelo) {
+                resultado.innerHTML = "Erro: O campo Modelo é obrigatório.";
+                return;
+            }
+            if (!placa) {
+                resultado.innerHTML = "Erro: O campo Placa é obrigatório.";
+                return;
+            }
+            if (!n_assentos || isNaN(n_assentos) || Number(n_assentos) <= 0) {
+                resultado.innerHTML = "Erro: Informe um número de assentos válido.";
+                return;
+            }
+
             let requisicao = await fetch('../../api/carros.php' , {
                 method: 'POST',
                 headers:{
@@ -88,7 +103,7 @@ dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
             })
         const resposta = await requisicao.json(); 
         console.log("Resposta:", resposta); 
-        const resultado = document.getElementById('resultado');
+    
         if (resposta.message === "veiculo ok"){
             resultado.innerHTML = "Veículo adicionado com sucesso";
             await dormir(1000);
