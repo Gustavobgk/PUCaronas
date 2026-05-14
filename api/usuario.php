@@ -127,7 +127,7 @@ switch ($method) {
 
     case 'DELETE':
         $id = $_GET['id'];
-        $conn->query("DELETE FROM usuario WHERE id=$id");
+        $conn->query("CALL deletar_usuario($id)");
         echo json_encode(["message" => "Usuário deletado com sucesso"]);
         break;
 

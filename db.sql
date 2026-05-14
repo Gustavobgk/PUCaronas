@@ -179,5 +179,73 @@ END $$
 DELIMITER ;
 
 
+DELIMITER $$
+CREATE PROCEDURE deletar_usuario(IN p_id_usuario INT)
+BEGIN
+    DECLARE v_cargo VARCHAR(20);
+    DECLARE v_status VARCHAR(20);
+    DECLARE v_id_carona INT;
+
+    SELECT cargo, status INTO v_cargo, v_status
+    FROM usuario
+    WHERE id = p_id_usuario;
+
+    IF v_cargo IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Erro: Usuário não encontrado.';
+
+    ELSEIF v_cargo = 'admin' THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Erro: Não é possível deletar um administrador.';
+
+    ELSE
+        IF v_cargo = 'motorista' THEN
+
+            UPDATE corrida
+            SET status = 'cancelada'
+            WHERE id_motorista = p_id_usuario
+              AND status IN ('pendente', 'em_andamento');
+
+            DELETE FROM aplicacao
+            WHERE id_carona IN (
+                SELECT id FROM carona WHERE id_motorista = p_id_usuario
+            );
+
+            UPDATE corrida
+            SET status = 'cancelada'
+            WHERE id_carona IN (
+                SELECT id FROM carona WHERE id_motorista = p_id_usuario
+            ) AND status IN ('pendente', 'em_andamento');
+
+            DELETE FROM carona
+            WHERE id_motorista = p_id_usuario;
+
+            DELETE FROM veiculo
+            WHERE id_motorista = p_id_usuario;
+
+        END IF;
+
+        IF v_cargo = 'passageiro' THEN
+
+            UPDATE corrida
+            SET status = 'cancelada'
+            WHERE id_passageiro = p_id_usuario
+              AND status IN ('pendente', 'em_andamento');
+
+            DELETE FROM aplicacao
+            WHERE id_passageiro = p_id_usuario;
+
+        END IF;
+
+        DELETE FROM log_usuario_status
+        WHERE id_usuario = p_id_usuario;
+
+        DELETE FROM usuario
+        WHERE id = p_id_usuario;
+
+    END IF;
+END $$
+DELIMITER ;
+
 
 
