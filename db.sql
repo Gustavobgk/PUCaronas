@@ -12,7 +12,7 @@ cargo ENUM('passageiro','motorista','admin'),
 doc VARCHAR(255)
 );
 INSERT INTO usuario (nome, email, senha_hash, data_nasc, status, cargo, doc) VALUES
-('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '01/04/1990', 'ativo', 'admin', NULL);
+('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '1986-04-26', 'ativo', 'admin', 'https://www.youtube.com/watch?v=qbWlwL9CygM');
 
 CREATE TABLE veiculo(
 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -144,6 +144,39 @@ BEGIN
 END $$
 
 
+DELIMITER $$
+CREATE PROCEDURE deletar_carona(IN p_id_carona INT)
+BEGIN
+    DECLARE v_status_carona VARCHAR(50);
+    DECLARE v_vagas_original INT;
+
+    SELECT status, vagas INTO v_status_carona, v_vagas_original
+    FROM carona
+    WHERE id = p_id_carona;
+
+    IF v_status_carona IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Erro: Carona não encontrada.';
+
+    ELSEIF v_status_carona = 'em_andamento' THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Erro: Não é possível deletar uma carona em andamento.';
+
+    ELSE
+        UPDATE corrida
+        SET status = 'cancelada'
+        WHERE id_carona = p_id_carona
+          AND status IN ('pendente', 'em_andamento');
+
+        DELETE FROM aplicacao
+        WHERE id_carona = p_id_carona;
+
+        DELETE FROM carona
+        WHERE id = p_id_carona;
+
+    END IF;
+END $$
+DELIMITER ;
 
 
 

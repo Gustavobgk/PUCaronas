@@ -121,7 +121,7 @@ GROUP BY c.id");
 
     case 'DELETE':
         $id = $_GET['id_corrida'];
-        $conn->query("DELETE FROM corrida WHERE id_corrida=$id");
+        $conn->query("CALL deletar_carona($id)");
         echo json_encode(["message" => "del sucesso"]);
         break;
 
