@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Minhas Caronas - PUCaronas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 35px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .carona-card {
+            background: white;
+            border-radius: 20px;
+            border-left: 10px solid darkred;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-top: none; border-right: none; border-bottom: none;
+        }
+
+        .carona-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .badge-vagas {
+            background-color: darkred;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white fw-bold" style="margin-left: 1vw;" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="logado_home.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="caronas.html">Caronas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container mb-5">
+    <div class="glass-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 id="bem-vindo" class="h3 fw-bold m-0">Suas Ofertas</h1>
+            <button type="button" id="logout" class="btn btn-outline-danger btn-sm rounded-pill px-4">Sair</button>
+        </div>
+
+        <div class="p-4 rounded-4 mb-4" style="background: rgba(248, 249, 250, 0.6);">
+            <h2 class="h5 fw-bold mb-3 text-dark">Filtrar Minhas Caronas</h2>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" id="filtro-origem" class="form-control rounded-pill" placeholder="Origem">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" id="filtro-destino" class="form-control rounded-pill" placeholder="Destino">
+                </div>
+                <div class="col-md-6 d-flex gap-2">
+                    <button type="button" id="btn-filtrar" class="btn btn-danger flex-grow-1 rounded-pill fw-bold">Buscar</button>
+                    <a href="criar_carona.html" class="btn btn-success flex-grow-1 rounded-pill fw-bold">Nova Carona</a>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="h5 fw-bold mb-4 text-secondary">Caronas que você cadastrou</h3>
+        <div id="tbody-caronas" class="row">
+            <!-- Blocos de cards inseridos via JS -->
+        </div>
+    </div>
+</div>
+
+<div id="detalhes-carona" class="container" style="display: none; background: white; padding: 30px; margin-bottom: 40px; border-radius: 25px; border-left: 10px solid darkred; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+  <h3>Detalhes da Carona</h3>
+  <div class="row text-dark">
+    <div class="col-md-6">
+      <p class="mb-2"><strong>Partida:</strong> <span id="detalhe-origem" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Chegada:</strong> <span id="detalhe-destino" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Título:</strong> <span id="detalhe-titulo" class="text-muted"></span></p>
+    </div>
+    <div class="col-md-6">
+      <p class="mb-2"><strong>Sobre:</strong> <span id="detalhe-descricao" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Aviso:</strong> <span id="detalhe-mensagem" class="text-muted"></span></p>
+      <p class="mb-2"><strong>Vagas:</strong> <span id="detalhe-vagas" class="badge bg-danger"></span></p>
+      <p class="mb-2"><strong>Situação:</strong> <span id="detalhe-status" class="text-uppercase fw-bold text-success"></span></p>
+    </div>
+  </div>
+  <div class="mt-4 d-flex gap-2">
+          <button type="button" class="btn btn-primary rounded-pill px-4"><a class="text-reset text-decoration-none" id="verCandidaturas">Ver Candidaturas</a></button>
+      <button type="button" class="btn btn-secondary rounded-pill px-4" onclick="fecharDetalhes()">Ocultar Detalhes</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bemvindo = document.getElementById('bem-vindo');
+        const nome = sessionStorage.getItem('nome');
+        if (nome == null ){
+            window.location.href = 'login.html';
+    }
+    else{
+           bemvindo.innerHTML = `Seja bem-vindo ${nome}`; 
+           carregarCaronas();
+    }
+
+    document.getElementById('btn-filtrar').addEventListener('click', filtrarCaronas);
+
+    });
+async function carregarCaronas() {
+    try {
+        const idMotoristaLogado = sessionStorage.getItem('id');
+        
+        let requisicao = await fetch('../../api/carona.php', { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao carregar caronas:", err);
+    }
+}
+
+
+async function filtrarCaronas() {
+    try {
+        
+        const origem = document.getElementById('filtro-origem').value;
+        const destino = document.getElementById('filtro-destino').value;
+
+        let url = '../../api/carona.php?'; 
+        if (origem) url += `origem=${origem}&`;
+        if (destino) url += `destino=${destino}&`;
+
+        let requisicao = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const resposta = await requisicao.json();
+        preencherTabelaCaronas(resposta);
+    } catch (err) {
+        console.log("Erro ao filtrar caronas:", err);
+    }
+}
+
+function preencherTabelaCaronas(caronas) {
+    const tbody = document.getElementById('tbody-caronas');
+    tbody.innerHTML = "";
+
+    const idMotoristaLogado = sessionStorage.getItem('id');
+
+
+
+    if (caronas.length === 0) {
+        tbody.innerHTML = '<div class="col-12 text-center py-5"><p class="text-white">Você ainda não criou nenhuma carona.</p></div>';
+        return;
+    }
+
+    caronas.forEach(carona => {
+        tbody.innerHTML += `
+        <div class="col-md-6">
+            <div class="carona-card p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-bold text-dark m-0">${carona.titulo}</h5>
+                    <span class="badge-vagas">${carona.vagas} Vagas</span>
+                </div>
+                <div class="mb-3 text-secondary small">
+                    <div><strong>Rota:</strong> ${carona.origem} → ${carona.destino}</div>
+                    <div><strong>Status:</strong> <span class="text-uppercase">${carona.status}</span></div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="alterar_carona.html?id=${carona.id}" class="btn btn-primary btn-sm rounded-pill px-4">Editar</a>
+                    <button onclick="deletar(${carona.id})" class="btn btn-outline-danger btn-sm rounded-pill px-4">Excluir</button>
+                    <button class="btn btn-info btn-sm rounded-pill px-4 text-white" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Ver Mais</button>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
+async function deletar(id){
+    await fetch(`../../api/carona.php?id=${id}`, { method: 'DELETE' });
+    tbody = document.getElementById('tbody-caronas');
+    tbody.innerHTML = "";
+    carregarCaronas(); 
+}
+
+
+function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas, status) { // Parâmetros atualizados
+    document.getElementById('detalhe-origem').textContent = origem;
+    document.getElementById('detalhe-destino').textContent = destino;
+    document.getElementById('detalhe-titulo').textContent = titulo;
+    document.getElementById('detalhe-descricao').textContent = descricao;
+    document.getElementById('detalhe-mensagem').textContent = mensagem;
+    document.getElementById('detalhe-vagas').textContent = vagas;
+    document.getElementById('detalhe-status').textContent = status;
+    document.getElementById('verCandidaturas').href = `../aplicacoes/aplicacoes_motorista.html?id_carona=${id}`;
+    document.getElementById('detalhes-carona').style.display = 'block';
+
+}
+
+function fecharDetalhes() {
+    document.getElementById('detalhes-carona').style.display = 'none';
+}
+
+
+logoutbtn = document.getElementById("logout");
+logoutbtn.addEventListener('click',logout);
+    function logout(){
+     sessionStorage.clear(); 
+     window.location.href = '../usuario/login.html'; 
+    }
+    </script>
+</body>
+</html>

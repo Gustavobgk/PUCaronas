@@ -92,6 +92,11 @@
     </div>
 </div>
 <script>
+        async function dormir(ms){
+            return new Promise(resolve => setTimeout(() => {
+                
+            }, ms))
+        }
         btn = document.getElementById("btn");
         btn.addEventListener('click', enviar);
 
@@ -178,6 +183,7 @@
         if (resposta.message) {
             sessionStorage.setItem("nome", nome);
             resultado.innerHTML = "Usuário adicionado com sucesso!!";
+            await dormir(1000);
             window.location.href = 'login.html';
         }
     } catch (err) {

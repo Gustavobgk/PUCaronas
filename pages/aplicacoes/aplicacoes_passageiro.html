@@ -81,7 +81,7 @@
         lista.innerHTML = ""; 
         let contador = 0;
         resposta.forEach(aplicacao => {
-
+        
         if (aplicacao.status = "pendente"){
             ap = "Pendente"; 
         }
@@ -90,7 +90,10 @@
         }
         else if (aplicacao.status = "recusado"){
             ap = "Recusado"; 
+            b = `        <a href="#" class="btn btn-outline-warning btn-sm ml-2" onclick="avaliar(${aplicacao.id_motorista})">Avaliar</a>
+` 
         }
+        
             lista.innerHTML += `
                 <div class="card mb-2">
                     <div class="card-body">

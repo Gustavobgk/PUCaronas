@@ -178,7 +178,9 @@ btn.addEventListener('click',enviar);
              return resposta
              
     }
+    let idMotorista;
     async function preencher(obj){
+        idMotorista = obj.id_motorista;
         document.getElementById('titulo').value = obj.titulo;
         document.getElementById('descricao').value = obj.descricao;
         document.getElementById('mensagem').value = obj.mensagem;
@@ -191,13 +193,12 @@ btn.addEventListener('click',enviar);
     
 
     async function carregar_veiculos() {
-        const id_motorista = sessionStorage.getItem("id");
-        if (!id_motorista) {
+                if (!idMotorista) {
             console.error("ID do motorista não encontrado na sessão.");
             return [];
         }
         try {
-            const requisicao = await fetch(`../../api/carros.php?id_motorista=${id_motorista}`, {
+            const requisicao = await fetch(`../../api/carros.php?id_motorista=${idMotorista}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
