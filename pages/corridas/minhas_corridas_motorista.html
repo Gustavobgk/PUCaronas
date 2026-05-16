@@ -67,9 +67,11 @@
       <div class="modal-body">
                         <select class="form-select form-control" aria-label="Selecione o participante" id="id_user">
                 </select>
-                      <div class="mt-3"> <input type="number" id="nota"></div>
+                        <div class="mt-1"> <label for="nota">Digite a nota:</label></div>
+                      <div class=""> <input type="number" id="nota"></div>
       </div>
       <div class="modal-footer">
+        <small id="resultado" style="position: relative; right: 2vw;"></small>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" onclick="enviarAvaliacao()">Concluir avaliação</button>
       </div>
@@ -78,6 +80,7 @@
 </div>
 
     <script>
+const dormir = (ms) => new Promise(resolve => setTimeout(resolve, ms));
        document.addEventListener("DOMContentLoaded", (event) => {
     const nome = sessionStorage.getItem('nome');
     const cargo = sessionStorage.getItem('cargo');
@@ -217,10 +220,30 @@ let id_carona_atual;
      console.log("id_passageiro:", id_passageiro);
     console.log("id_motorista:", id_motorista);
     console.log("nota:", nota);
+    if (id_passageiro == "Selecione o participante" && !nota){
+         document.getElementById('resultado').innerHTML="Selecione o participante e digite a nota.";     
+        await dormir(1000);
+         document.getElementById('resultado').innerHTML="";     
+        
+         return;
+        }
+    
+    else if (id_passageiro == "Selecione o participante")  {
+        document.getElementById('resultado').innerHTML="Selecione um participante!!";
+        await dormir(1000);
+         document.getElementById('resultado').innerHTML="";     
+  
+        return;
+    }
 
+    else if (!nota) { 
+        document.getElementById('resultado').innerHTML="Digite uma nota!!";
+        await dormir(1000);
+         document.getElementById('resultado').innerHTML="";     
+  
+        return;
+    }
 
-
-    if (!nota) { alert('Selecione uma nota!'); return; }
 
     const req = await fetch(
         `../../api/avaliacoes.php?id_passageiro=${id_passageiro}&id_motorista=${id_motorista}`,
@@ -231,9 +254,13 @@ let id_carona_atual;
         }
     );
     const resposta = await req.json();
+    console.log(resposta.message);
     if (resposta.message) {
+        document.getElementById('nota').value = ''
+        document.getElementById('resultado').innerHTML = 'Avaliação enviada!';
+        await dormir(1000);
+        document.getElementById('resultado').innerHTML = '';   
         $('#modalAvaliacao').modal('hide');
-        alert('Avaliação enviada!');
         receber();
     }
 }

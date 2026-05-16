@@ -87,11 +87,12 @@ switch ($method) {
     $tipo      = $input['tipo'];
     $nota      = $input['nota'];
 
-        $result = $conn->query("INSERT INTO avaliacao(id_passageiro,id_motorista,tipo,nota) VALUES ('$id_passageiro', '$id_motorista', '$tipo', '$nota')");
-                    echo json_encode(["message" => "avaliacao enviada"]);
-                    $aplicacoes = [];
-                   
-            echo json_encode($aplicacoes);
+        if ($conn->query("INSERT INTO avaliacao(id_passageiro, id_motorista, tipo, nota) 
+                      VALUES ('$id_passageiro', '$id_motorista', '$tipo', '$nota')")) {
+        echo json_encode(["message" => "avaliacao enviada"]);
+    } else {
+        echo json_encode(["error" => $conn->error]);
+    }
         
         break;
 
