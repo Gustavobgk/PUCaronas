@@ -6,22 +6,61 @@
     <title>Registro</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <style>
+
+        body {
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+
         .form-control {
-            width: 20vw;
+            border-radius: 50px;
+            
+
+            
         }
+
         .card {
-            margin-top: 5vh;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
         }
+        
         body {
             background-color: #f8f9fa;
         }
+
         .btn-link {
             text-decoration: none;
             color: inherit;
         }
+
+        .btn-primary {
+            background: darkred;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 0.8rem;
+            transition: 0.3s;
+            border: none;
+        }
+
+        .btn-secondary{
+            background: rgb(91, 91, 91);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 0.8rem;
+            transition: 0.3s;
+            border: none;
+        }
+
     </style>
 </head>
 <body>
@@ -53,15 +92,15 @@
         <form>
             <div class="form-group">
                 <label for="nome">Nome:</label>
-                <input type="text" class="form-control" name="nome" id="nome">
+                <input type="text" class="form-control" name="nome" id="nome" placeholder="Digite seu nome: ">
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" class="form-control" name="email" id="email">
+                <input type="email" class="form-control" name="email" id="email" placeholder="seuemail@pucpr.edu.br">
             </div>
             <div class="form-group">
                 <label for="senha_hash">Senha:</label>
-                <input type="password" class="form-control" name="senha" id="senha_hash">
+                <input type="password" class="form-control" name="senha" id="senha_hash" placeholder="Digite sua senha: ">
             </div>
             <div class="form-group">
                 <label for="data_nasc">Data de Nascimento:</label>
