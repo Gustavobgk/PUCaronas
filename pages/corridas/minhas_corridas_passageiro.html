@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Corridas - Passageiro</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+<style>
+            .card {
+            margin-top: 5vh;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+  <a class="navbar-brand text-white" href="#">PUCaronas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link text-white" href="../caronas/logado_home.html">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../caronas/caronas.html">Caronas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card w-100" style="max-width: 500px;">
+        <h3 class="text-center mb-4">Minhas Corridas</h3>
+        <div class="text-center mb-3">
+            <a href="../aplicacoes/gerenciar_passageiro.html" class="btn btn-primary">Ver minhas Aplicações</a>
+        </div>
+        <div id="corridas-lista" class="mb-3">
+
+
+            
+        </div>
+  
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAvaliacao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Realizar a avaliação do motorista da corrida </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+                   <h1 id="id_user"></h1>
+                        <div class="mt-1"> <label for="nota">Digite a nota:</label></div>
+                      <div class=""> <input type="number" id="nota"></div>
+      </div>
+      <div class="modal-footer">
+        <small id="resultado" style="position: relative; right: 2vw;"></small>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="enviarAvaliacao()">Concluir avaliação</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+const dormir = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+       document.addEventListener("DOMContentLoaded", (event) => {
+    const nome = sessionStorage.getItem('nome');
+    const cargo = sessionStorage.getItem('cargo');
+    const status = sessionStorage.getItem('status');
+    if (cargo !== 'passageiro' && cargo !== 'admin') {
+        window.location.href = '../usuario/login.html';
+    }
+    receber();
+});
+
+
+
+ async function receber(){
+            try {
+            id_passageiro = sessionStorage.getItem('id');
+            let requisicao = await fetch(`../../api/corridas.php?id_passageiro=${id_passageiro}` , {
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            })
+            
+        const resposta = await requisicao.json(); 
+        console.log("Resposta:", resposta);
+        
+        const lista = document.getElementById('corridas-lista');
+        lista.innerHTML = ""; 
+        let contador = 0;
+        resposta.forEach(corrida => {
+
+                const labels = {
+        'pendente':     'Pendente',
+        'em_andamento': 'Em andamento',
+        'finalizada':   'Finalizada',
+        'cancelada':    'Cancelada'
+    };
+
+    const ap = labels[corrida.status] || corrida.status;
+    const botoes = corrida.status === 'finalizada' ? `
+        <a href="#" class="btn btn-outline-warning btn-sm ml-2"  data-toggle="modal" onclick="abrirModal(${corrida.id_carona},${corrida.id_motorista})">Avaliar</a>
+    ` : '';
+
+            lista.innerHTML += `
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1" style = "position: relative;
+  bottom: 2.5vh;
+  font-size: 1.3vw;
+  right: 2vw;">Carona : ${corrida.titulo}</h5>
+                        <p class="mb-1">Origem: <b>${corrida.origem}</b></p>
+                        <p class="mb-1">Destino: <b>${corrida.destino}</b></p>
+                        <p class="mb-1">Motorista: <b>${corrida.nome}</b></p>
+                        <span class="badge badge-primary">${ap} </span>
+                        <div class="mt-4 d-flex justify-content-center align-items-center" id="btn-lista">
+                     ${botoes}
+                            </div>
+                    </div>
+                </div>
+            `;
+            contador +=1;
+
+                       
+
+        });
+
+
+
+
+
+    } 
+            catch (err) {
+                console.log(err);
+            }
+
+
+
+
+}
+
+async function atualizarStatus(id_carona,acao){
+try{
+    id_motorista = sessionStorage.getItem('id');
+    let requisicao = await fetch(`../../api/corridas.php?id_carona=${id_carona}&id_motorista=${id_motorista}` , {
+        method: 'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({status: acao})
+                })
+
+                 const resposta = await requisicao.json(); 
+        console.log("Resposta:", resposta);
+        lista = document.getElementById('corridas-lista');
+        lista.innerHTML = "";
+        receber();        
+}
+catch(err){
+    console.log("erro é:" + err);
+    alert(err);
+}
+}
+    // <a href="#" class="ml-2  btn btn-outline-primary" onclick="atualizarStatus(${corrida.id_carona},'em_andamento')" id="iniciar">Iniciar</a>
+    //                     <a href="#" class="ml-2 mr-2 btn btn-outline-info" onclick="atualizarStatus(${corrida.id_carona},'finalizada')" id="finalizar">Finalizar</a>
+    //                     <a href="#" class="ml-2 btn btn-outline-danger" onclick="atualizarStatus(${corrida.id_carona},'cancelada')" id="cancelar">Cancelar</a>
+                    
+
+
+let id_carona_atual;
+let id_motorista_atual;
+    async function abrirModal(id_carona,id_motorista){
+        id_carona_atual = id_carona;
+        id_motorista_atual = id_motorista;
+        const id_passageiro=sessionStorage.getItem('id');
+        const req = await fetch(`../../api/usuario.php?id=${id_motorista}`);
+        const motorista = await req.json();
+        console.log(motorista);
+        console.log(id_motorista);
+        const nome_motorista = document.getElementById('id_user');
+        nome_motorista.innerHTML = `Motorista: ${motorista.nome}` 
+    $('#modalAvaliacao').modal('show');
+    }
+
+    async function enviarAvaliacao() {
+    const id_motorista = id_motorista_atual;
+    console.log(id_motorista_atual);
+    const id_passageiro = sessionStorage.getItem('id');
+    notaSelecionada = document.getElementById('nota').value;
+    const nota = notaSelecionada; // da lógica de estrelas
+     console.log("id_passageiro:", id_passageiro);
+    console.log("id_motorista:", id_motorista);
+    console.log("nota:", nota);
+
+    if (!nota) { 
+        document.getElementById('resultado').innerHTML="Digite uma nota!!";
+        await dormir(1000);
+         document.getElementById('resultado').innerHTML="";     
+  
+        return;
+    }
+
+
+    const req = await fetch(
+        `../../api/avaliacoes.php?id_passageiro=${id_passageiro}&id_motorista=${id_motorista}`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nota, tipo: 'passageiro_para_motorista' })
+        }
+    );
+    const resposta = await req.json();
+    console.log(resposta.message);
+    if (resposta.message) {
+        document.getElementById('nota').value = ''
+        document.getElementById('resultado').innerHTML = 'Avaliação enviada!';
+        await dormir(1000);
+        document.getElementById('resultado').innerHTML = '';   
+        document.getElementById('id_user').innerHTML = '';
+        $('#modalAvaliacao').modal('hide');
+        receber();
+    }
+}
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
