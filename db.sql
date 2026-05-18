@@ -11,14 +11,12 @@ status VARCHAR(20),
 cargo ENUM('passageiro','motorista','admin'),
 doc VARCHAR(255)
 );
-INSERT INTO usuario (nome, email, senha_hash, data_nasc, status, cargo, doc) VALUES
-('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '01/04/1990', 'ativo', 'admin', NULL);
 
 CREATE TABLE veiculo(
 id INT PRIMARY KEY AUTO_INCREMENT,
 id_motorista INT,
 modelo VARCHAR(128),
-placa VARCHAR(7),
+placa VARCHAR(7) UNIQUE,
 n_assentos INT,
 FOREIGN KEY (id_motorista) REFERENCES usuario(id)
 );
@@ -134,6 +132,8 @@ END $$
 
 DELIMITER ;
 
+
+
 DELIMITER $$ 
 
 CREATE PROCEDURE aprovar_usuario(IN p_id_usuario INT)
@@ -142,9 +142,71 @@ BEGIN
     SET status = 'aprovado'
     WHERE id = p_id_usuario;
 END $$
+DELIMITER ;
+
+
+ALTER TABLE aplicacao 
+MODIFY COLUMN status ENUM('pendente', 'aprovado', 'recusado') DEFAULT 'pendente';
+
+ALTER TABLE usuario 
+MODIFY COLUMN status ENUM('espera', 'aprovado', 'reprovado', 'banido') DEFAULT 'espera';
+
+INSERT INTO usuario (nome, email, senha_hash, data_nasc, status, cargo, doc) VALUES
+('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '1990-01-04', 'aprovado', 'admin', NULL);
 
 
 
+DROP trigger aplicacao_corrida;
+DELIMITER $$
+CREATE TRIGGER aplicacao_corrida
+AFTER UPDATE ON aplicacao
+FOR EACH ROW
+BEGIN
+    DECLARE v_id_motorista INT;
+    DECLARE v_origem VARCHAR(50);
+    DECLARE v_destino VARCHAR(50);
+
+    IF NEW.status = 'aprovado' AND OLD.status = 'pendente' THEN
+
+        SELECT id_motorista, origem, destino
+        INTO v_id_motorista, v_origem, v_destino
+        FROM carona
+        WHERE id = NEW.id_carona;
+
+        INSERT INTO corrida (
+            id_motorista,
+            id_passageiro,
+            id_carona,
+            origem,
+            destino,
+            status
+        ) VALUES (
+            v_id_motorista,
+            NEW.id_passageiro,
+            NEW.id_carona,
+            v_origem,
+            v_destino,
+            'pendente'
+        );
+
+        UPDATE carona
+        SET vagas = vagas - 1
+        WHERE id = NEW.id_carona AND vagas > 0;
+
+    END IF;
+END$$
+DELIMITER ;
 
 
 
+CREATE TABLE avaliacao (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    id_passageiro INT,
+    id_motorista  INT,
+    nota        INT CHECK (nota BETWEEN 1 AND 5),
+    comentario  VARCHAR(255),
+    data_hora   TIMESTAMP DEFAULT NOW(),
+    tipo        ENUM('passageiro_para_motorista', 'motorista_para_passageiro'),
+    FOREIGN KEY (id_passageiro) REFERENCES usuario(id),
+    FOREIGN KEY (id_motorista)  REFERENCES usuario(id)
+);

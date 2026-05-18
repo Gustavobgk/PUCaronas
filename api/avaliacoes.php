@@ -65,6 +65,16 @@ switch ($method) {
             
         
          }
+         else if (isset($_GET['checagem_passageiro_motorista'])){
+            $id_motorista = $input['id_motorista'];
+            $id_passageiro = $input['id_passageiro'];
+            $result = $conn->query("SELECT id_passageiro,id_motorista,tipo from avaliacao where id_passageiro = $id_passageiro AND id_motorista = $id_motorista AND tipo = 'passageiro_para_motorista'");
+            $aplicacoes = [];
+            while ($row = $result->fetch_assoc()) {
+                $aplicacoes[] = $row;
+            }
+            echo json_encode($aplicacoes);
+         }
                  else {
             $result = $conn->query("SELECT * FROM avaliacao");
             $users = [];
