@@ -75,6 +75,7 @@
         <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
       </li>
     </ul>
+    <span id="bem-vindo" class="navbar-text ml-auto text-white"></span>
   </div>
 </nav>
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
@@ -103,11 +104,15 @@
     </div>
 </div>
 <script>
+    const bemvindo = document.getElementById('bem-vindo');
+    const nome = sessionStorage.getItem('nome');
     const cargo = sessionStorage.getItem('cargo');
     if (cargo === 'motorista') {
         document.getElementById('div-motorista').style.display = 'block';
+        bemvindo.textContent = `Seja bem-vindo ${nome}`;
     } else if (cargo === 'passageiro') {
         document.getElementById('div-passageiro').style.display = 'block';
+        bemvindo.textContent = `Seja bem-vindo ${nome}`;
     } else if (cargo === 'admin') {
         document.getElementById('div-admin').style.display = 'block';
     } else {
