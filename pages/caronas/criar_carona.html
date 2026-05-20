@@ -8,20 +8,53 @@
     <style>
         .form-control {
             width: 20vw;
+            max-width: 20vw;
+            min-width: 220px;
         }
         .card {
-            margin-top: 5vh;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            margin: 1rem auto;
+            transition: all 0.3s ease;
         }
+
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
         }
+
         .btn-link {
             text-decoration: none;
             color: inherit;
         }
+
+        .btn-primary {
+            background: darkred;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 0.8rem;
+            transition: 0.3s;
+            border: none;
+        }
+
+        .btn-primary:hover{
+            background: linear-gradient(135deg, #8b0000, #ce0a00);
+            color: white;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
+            border-color: transparent;  
+        }
+
     </style>
 </head>
 <body>
@@ -42,6 +75,7 @@
         <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
       </li>
     </ul>
+    <span id="bem-vindo" class="navbar-text ml-auto text-white"></span>
   </div>
 </nav>
 
@@ -89,10 +123,16 @@
         const dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
        document.addEventListener('DOMContentLoaded', async () => {
         const cargo = sessionStorage.getItem('cargo');
+        const nome = sessionStorage.getItem('nome');
         if (cargo !== 'motorista') {
             window.location.href = '../usuario/login.html';
             return;
+        } else {
+            const bemvindo = document.getElementById('bem-vindo');
+            bemvindo.textContent = `Seja bem-vindo ${nome}`;
         }
+
+        
         await carregarEPreencherVeiculos();
     });
 
