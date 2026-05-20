@@ -9,13 +9,69 @@
 <style>
             .card {
             margin-top: 5vh;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        body {
-            background-color: #f8f9fa;
-        }
+            padding: 3rem;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            }
+
+
+            body {
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            }
+
+            .btn-outline-warning {
+            color: #ffc107;
+            border: 2px solid #ffc107;
+            border-radius: 14px;
+            padding: 0.7rem 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: rgba(255, 193, 7, 0.08);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+            }
+
+            .btn-outline-warning:hover {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: white;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
+            border-color: transparent;
+            }
+
+            .btn-outline-warning:active {
+            transform: scale(0.96);
+            }
+
+            .btn-outline-warning:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.35);
+            }
+
+            .btn-primary{
+            background: darkred;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 0.8rem;
+            transition: 0.3s;
+            border: none;
+            }
+
+            .btn-primary:hover{
+            background: linear-gradient(135deg, #8b0000, #ce0a00);
+            color: white;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
+            border-color: transparent;  
+            }
 </style>
 </head>
 <body>
@@ -36,6 +92,7 @@
         <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
       </li>
     </ul>
+    <span id="bem-vindo" class="navbar-text ml-auto text-white"></span>
   </div>
 </nav>
 
@@ -85,8 +142,11 @@ const dormir = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const nome = sessionStorage.getItem('nome');
     const cargo = sessionStorage.getItem('cargo');
     const status = sessionStorage.getItem('status');
+    const bemvindo = document.getElementById('bem-vindo');
     if (cargo !== 'motorista' && cargo !== 'admin') {
         window.location.href = '../usuario/login.html';
+    }else {
+        bemvindo.textContent = `Seja bem-vindo ${nome}`;
     }
     receber();
 });
