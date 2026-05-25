@@ -45,7 +45,8 @@ switch ($method) {
         case 'cadastro':
         $nome = $input['nome'];
         $email = $input['email'];
-        $senha_hash = $input['senha_hash'];
+        $senha = $input['senha_hash'];
+        $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
         $data_nasc = $input['data_nasc'];
         $status = "espera";
         $cargo = $input['cargo'];
@@ -80,12 +81,10 @@ switch ($method) {
 
                 $email = $input['email'];
                 $senha = $input['senha_hash'];
+                $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
                 $result = $conn->query("SELECT * FROM usuario WHERE email='$email'");
                 $user = $result->fetch_assoc();
-                if (!$user) {
-                    echo json_encode(["error" => "Email ou senha inválidos"]);
-                }
-                else if ($user['senha_hash'] !== $senha) {
+                if (!$user ||  !password_verify($senha, $user['senha_hash']) ) {
                     echo json_encode(["error" => "Email ou senha inválidos"]);
                 }
                 else if ($user['cargo'] == 'admin') {
