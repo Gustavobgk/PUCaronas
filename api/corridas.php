@@ -58,7 +58,7 @@ where co.id_passageiro = $id_passageiro");
         
          }
         else {
-            $result = $conn->query("SELECT * FROM corridas");
+            $result = $conn->query("SELECT * FROM corrida");
             $users = [];
             while ($row = $result->fetch_assoc()) {
                 $users[] = $row;
