@@ -1,15 +1,15 @@
-drop database pucaronas;
 CREATE DATABASE pucaronas;
 USE pucaronas;
-CREATE TABLE usuario(
-id INT PRIMARY KEY AUTO_INCREMENT,
+
+CREATE TABLE usuario (
+id INT AUTO_INCREMENT PRIMARY KEY,
 nome VARCHAR(100),
 email VARCHAR(100) UNIQUE,
 senha_hash VARCHAR(128),
 data_nasc DATE,
-status VARCHAR(20),
-cargo ENUM('passageiro','motorista','admin'),
-doc VARCHAR(255)
+status ENUM('espera', 'aprovado', 'reprovado', 'banido') DEFAULT 'espera',
+cargo ENUM('passageiro', 'motorista', 'admin'),
+doc VARCHAR(255),
 );
 
 CREATE TABLE veiculo(
@@ -40,9 +40,9 @@ CREATE TABLE aplicacao (
 id INT AUTO_INCREMENT PRIMARY KEY,
 id_passageiro INT,
 id_carona INT,
-status VARCHAR(10), 
-data_aplicacao TIMESTAMP, 
-data_revisao TIMESTAMP,
+status ENUM('pendente', 'aprovado', 'recusado') DEFAULT 'pendente',
+data_aplicacao TIMESTAMP,
+data_revisao  TIMESTAMP,
 mensagem VARCHAR(100),
 FOREIGN KEY (id_passageiro) REFERENCES usuario(id),
 FOREIGN KEY (id_carona) REFERENCES carona(id)
@@ -110,7 +110,7 @@ ALTER TABLE usuario
 MODIFY COLUMN status ENUM('espera', 'aprovado', 'reprovado', 'banido') DEFAULT 'espera';
 
 INSERT INTO usuario (nome, email, senha_hash, data_nasc, status, cargo, doc) VALUES
-('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '1986-04-26', 'ativo', 'admin', 'https://www.youtube.com/watch?v=qbWlwL9CygM');
+('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '1986-04-26', 'aprovado', 'admin', 'https://www.youtube.com/watch?v=qbWlwL9CygM');
 
 
 DELIMITER $$
