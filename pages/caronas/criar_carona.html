@@ -192,6 +192,32 @@
             const origem = document.getElementById('origem').value;
             const destino = document.getElementById('destino').value;
 
+               if (!titulo) {
+                resultado.innerHTML = "Erro: O campo Titulo é obrigatório.";
+                return;
+            }
+            if (!descricao) {
+                resultado.innerHTML = "Erro: O campo Descrição é obrigatório.";
+                return;
+            }
+            if (!mensagem) {
+                resultado.innerHTML = "Erro: O campo Mensagem é obrigatório.";
+                return;
+            }
+            if (!vagas) {
+                resultado.innerHTML = "Erro: O campo Vagas é obrigatório.";
+                return;
+            }
+            if (!origem) {
+                resultado.innerHTML = "Erro: O campo Origem é obrigatório.";
+                return;
+            }
+            if (!destino) {
+                resultado.innerHTML = "Erro: O campo Destino é obrigatório.";
+                return;
+            }
+    
+
     
             const requisicao = await fetch('../../api/carona.php', {
                 method: 'POST',
