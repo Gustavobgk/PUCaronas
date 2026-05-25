@@ -9,7 +9,7 @@ senha_hash VARCHAR(128),
 data_nasc DATE,
 status ENUM('espera', 'aprovado', 'reprovado', 'banido') DEFAULT 'espera',
 cargo ENUM('passageiro', 'motorista', 'admin'),
-doc VARCHAR(20),
+doc VARCHAR(255),
 );
 
 CREATE TABLE veiculo(
