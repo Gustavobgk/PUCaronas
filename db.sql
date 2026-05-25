@@ -110,7 +110,7 @@ ALTER TABLE usuario
 MODIFY COLUMN status ENUM('espera', 'aprovado', 'reprovado', 'banido') DEFAULT 'espera';
 
 INSERT INTO usuario (nome, email, senha_hash, data_nasc, status, cargo, doc) VALUES
-('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '1990-01-04', 'aprovado', 'admin', NULL);
+('ADM', 'ADM@pucpr.edu.br', 'ADM12345', '1986-04-26', 'ativo', 'admin', 'https://www.youtube.com/watch?v=qbWlwL9CygM');
 
 
 DELIMITER $$
