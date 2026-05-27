@@ -1,5 +1,5 @@
 CREATE DATABASE pucaronas;
-USE pucaronastest;
+USE pucaronas;
 CREATE TABLE usuario(
 id INT PRIMARY KEY AUTO_INCREMENT,
 nome VARCHAR(100),
