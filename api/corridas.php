@@ -36,19 +36,20 @@ GROUP BY c.id
          else  if (isset($_GET['id_passageiro'])){
             $id_passageiro = $_GET['id_passageiro'];
 
-            $result = $conn->query("SELECT    co.id,
+            $result = $conn->query("SELECT
+    co.id,
     co.origem,
     co.destino,
     co.status,
     co.data_inicio,
     co.data_fim,
     c.titulo,
-    c.id as id_carona,
-    co.id_motorista, u.id,u.nome 
-    from corrida co inner join
-    carona c on c.id = co.id_carona
-    inner join usuario u on u.id = co.id_motorista
-where co.id_passageiro = $id_passageiro");
+    GROUP_CONCAT(u.nome SEPARATOR ', ') AS passageiros
+FROM corrida co
+INNER JOIN carona c ON c.id = co.id_carona
+INNER JOIN usuario u ON u.id = co.id_passageiro
+WHERE co.id_passageiro = $id_passageiro
+GROUP BY c.id");
  $aplicacoes = [];
             while ($row = $result->fetch_assoc()) {
                 $aplicacoes[] = $row;
@@ -120,7 +121,7 @@ where co.id_passageiro = $id_passageiro");
 
     case 'DELETE':
         $id = $_GET['id_corrida'];
-        $conn->query("DELETE FROM corrida WHERE id_corrida=$id");
+        $conn->query("CALL deletar_carona($id)");
         echo json_encode(["message" => "del sucesso"]);
         break;
 

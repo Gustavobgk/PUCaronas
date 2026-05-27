@@ -8,7 +8,18 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 switch ($method) {
     case 'GET':
-        if (isset($_GET['id_motorista']) && isset($_GET['id_passageiro'])) {
+            if (isset($_GET['checagem_passageiro_motorista'])){
+            $id_motorista = $_GET['id_motorista'];
+            $id_passageiro = $_GET['id_passageiro']; 
+            $result = $conn->query("SELECT id_passageiro,id_motorista,tipo from avaliacao where id_passageiro = $id_passageiro AND id_motorista = $id_motorista AND tipo = 'passageiro_para_motorista'");
+            $aplicacoes = [];
+            while ($row = $result->fetch_assoc()) {
+                $aplicacoes[] = $row;
+            }
+            echo json_encode($aplicacoes);
+         }
+
+        else if (isset($_GET['id_motorista']) && isset($_GET['id_passageiro'])) {
             $id_passageiro = $_GET['id_passageiro'];
             $id_motorista = $_GET['id_motorista'];
             $result = $conn->query("SELECT * from avaliacao where id_motorista = $id_motorista AND id_passageiro = $id_passageiro");
@@ -64,16 +75,6 @@ switch ($method) {
             echo json_encode($aplicacoes);
             
         
-         }
-         else if (isset($_GET['checagem_passageiro_motorista'])){
-            $id_motorista = $_GET['id_motorista'];
-            $id_passageiro = $_GET['id_passageiro'];
-            $result = $conn->query("SELECT id_passageiro,id_motorista,tipo from avaliacao where id_passageiro = $id_passageiro AND id_motorista = $id_motorista AND tipo = 'passageiro_para_motorista'");
-            $aplicacoes = [];
-            while ($row = $result->fetch_assoc()) {
-                $aplicacoes[] = $row;
-            }
-            echo json_encode($aplicacoes);
          }
                  else {
             $result = $conn->query("SELECT * FROM avaliacao");

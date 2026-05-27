@@ -219,16 +219,18 @@ let id_motorista_atual;
   
         return;
     }
-    const req_check = await fetch(
-        `../../api/avaliacoes.php?checagem_passageiro_motorista=1`,
-        {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nota, tipo: 'passageiro_para_motorista' })
-        })
-
-    const resposta2 = await req.json();
+    const req_check = await fetch(`../../api/avaliacoes.php?checagem_passageiro_motorista=1&id_passageiro=${id_passageiro}&id_motorista=${id_motorista}`);
+    const resposta2 = await req_check.json();
     console.log(resposta2.message);
+    console.log("TEST");
+    if (resposta2.length > 0) {
+    document.getElementById('resultado').innerHTML = 'Você já avaliou este motorista!';
+    await dormir(1500);
+    document.getElementById('resultado').innerHTML = '';
+            document.getElementById('nota').value = ''
+            $('#modalAvaliacao').modal('hide');
+    return; 
+}
     const req = await fetch(
         `../../api/avaliacoes.php?id_passageiro=${id_passageiro}&id_motorista=${id_motorista}`,
         {
