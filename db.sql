@@ -157,34 +157,27 @@ BEGIN
     IF v_status_carona IS NULL THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Erro: Carona não encontrada.';
-
     ELSEIF v_status_carona = 'em_andamento' THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Erro: Não é possível deletar uma carona em andamento.';
-
     ELSE
-        UPDATE corrida
-        SET status = 'cancelada'
-        WHERE id_carona = p_id_carona
-          AND status IN ('pendente', 'em_andamento');
+        DELETE FROM corrida
+        WHERE id_carona = p_id_carona;
 
         DELETE FROM aplicacao
         WHERE id_carona = p_id_carona;
 
         DELETE FROM carona
         WHERE id = p_id_carona;
-
     END IF;
 END $$
 DELIMITER ;
-
 
 DELIMITER $$
 CREATE PROCEDURE deletar_usuario(IN p_id_usuario INT)
 BEGIN
     DECLARE v_cargo VARCHAR(20);
     DECLARE v_status VARCHAR(20);
-    DECLARE v_id_carona INT;
 
     SELECT cargo, status INTO v_cargo, v_status
     FROM usuario
@@ -201,21 +194,15 @@ BEGIN
     ELSE
         IF v_cargo = 'motorista' THEN
 
-            UPDATE corrida
-            SET status = 'cancelada'
-            WHERE id_motorista = p_id_usuario
-              AND status IN ('pendente', 'em_andamento');
+            DELETE FROM corrida
+            WHERE id_carona IN (
+                SELECT id FROM carona WHERE id_motorista = p_id_usuario
+            );
 
             DELETE FROM aplicacao
             WHERE id_carona IN (
                 SELECT id FROM carona WHERE id_motorista = p_id_usuario
             );
-
-            UPDATE corrida
-            SET status = 'cancelada'
-            WHERE id_carona IN (
-                SELECT id FROM carona WHERE id_motorista = p_id_usuario
-            ) AND status IN ('pendente', 'em_andamento');
 
             DELETE FROM carona
             WHERE id_motorista = p_id_usuario;
@@ -227,10 +214,8 @@ BEGIN
 
         IF v_cargo = 'passageiro' THEN
 
-            UPDATE corrida
-            SET status = 'cancelada'
-            WHERE id_passageiro = p_id_usuario
-              AND status IN ('pendente', 'em_andamento');
+            DELETE FROM corrida
+            WHERE id_passageiro = p_id_usuario;
 
             DELETE FROM aplicacao
             WHERE id_passageiro = p_id_usuario;
@@ -246,6 +231,4 @@ BEGIN
     END IF;
 END $$
 DELIMITER ;
-
-
 

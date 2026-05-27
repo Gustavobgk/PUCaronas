@@ -70,7 +70,7 @@ switch ($method) {
 
     case 'DELETE':
         $id = $_GET['id'];
-        $conn->query("DELETE FROM carona WHERE id=$id");
+        $conn->query("CALL deletar_carona($id)");
         echo json_encode(["message" => "del sucesso"]);
         break;
 
