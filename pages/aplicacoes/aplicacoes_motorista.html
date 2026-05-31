@@ -91,12 +91,16 @@
         titulo.innerText = aplicacao.titulo;
         if (aplicacao.status === "pendente"){ // Corrigido: de '=' para '==='
             ap = "Pendente"; 
+            btn = `                <a href="" class="btn btn-outline-success btn-sm mr-2" id="btn-aprovar" value="aprovado" onclick="atualizarStatus(${aplicacao.id_aplicacao},'aprovado')">Aprovar</a>                            <button class="btn btn-outline-danger btn-sm" id = "btn-reprovar" value="recusado" onclick="atualizarStatus(${aplicacao.id_aplicacao},'recusado')">Reprovar</button>`;
         }
         else if (aplicacao.status === "aprovado"){ // Corrigido: de '=' para '==='
             ap = "Aprovado"; 
+            btn = '';
+
         }
         else if (aplicacao.status === "recusado"){ // Corrigido: de '=' para '==='
-            ap = "Recusado"; 
+            ap = "Recusado";
+            btn = ''; 
         }
             lista.innerHTML += `
                 <div class="card mb-2">
@@ -106,9 +110,7 @@
                         <p class="mb-1">Passageiro: <b>${aplicacao.nome}</b></p>
                         <span class="badge badge-primary">${aplicacao.vagas} vagas disponíveis</span>
                                                 <div class="mt-2 float-right">
-                            <a href="" class="btn btn-outline-success btn-sm mr-2" id="btn-aprovar" value="aprovado" onclick="atualizarStatus(${aplicacao.id_aplicacao},'aprovado')">Aprovar</a>
-                            <button class="btn btn-outline-danger btn-sm" id = "btn-reprovar" value="recusado" onclick="atualizarStatus(${aplicacao.id_aplicacao},'recusado')">Reprovar</button>
-                        </div>
+                      ${btn}  </div>
                     </div>
                 </div>
             `;

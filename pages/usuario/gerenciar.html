@@ -107,11 +107,89 @@
                     </tr>
                 </thead>
                 <tbody id="tbody-usuarios">
-                    <!-- Usuários inseridos via JS -->
+                    <!-- users inseridos-->
                 </tbody>
             </table>
         </div>
     </div>
+</div>
+
+
+
+<!-- Modal usuario aprovado -->
+<div class="modal fade" id="modalAprovado" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header" style="background-color: darkred;">
+        <h5 class="modal-title text-white fw-bold">&#10003; Usuário Aprovado</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <div style="font-size: 3rem; color: #198754;">&#10003;</div>
+        <p class="mt-2 mb-0 text-dark fw-semibold">Usuário aprovado com sucesso!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal confirma deleção -->
+<div class="modal fade" id="modalConfirmarDeletar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title fw-bold">Confirmar Exclusão</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <div style="font-size: 3rem;">&#9888;</div>
+        <p class="mt-2 mb-0 text-dark fw-semibold">Deseja realmente deletar este usuário?</p>
+        <small class="text-muted">Esta ação não pode ser desfeita.</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger rounded-pill px-4" onclick="confirmarDeletar()">Deletar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal sucesso deleçao -->
+<div class="modal fade" id="modalDeletado" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header" style="background-color: darkred;">
+        <h5 class="modal-title text-white fw-bold">Usuário Removido</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <p class="mb-0 text-dark fw-semibold">Usuário deletado com sucesso.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal erro ao deletar -->
+<div class="modal fade" id="modalErroDeletar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title fw-bold">Erro</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <p class="mb-0 text-dark fw-semibold">Erro ao deletar usuário. Tente novamente.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -159,7 +237,7 @@
         });
         const result = await resp.json();
         if(result.message === "sucesso") {
-            alert("Usuário aprovado com sucesso!");
+            new bootstrap.Modal(document.getElementById('modalAprovado')).show();
             carregarUsuarios();
         }
     }
@@ -168,20 +246,28 @@
         // Função mantida caso queira apenas mudar status para reprovado
     }
 
-    async function deletar(id) {
-        if(confirm("Deseja realmente deletar este usuário?")) {
-            const resp = await fetch(`../../api/usuario.php?id=${id}`, {
-                method: 'DELETE'
-            });
-            const result = await resp.json();
-            if(result.message === "Usuário deletado com sucesso") {
-                alert("Usuário deletado.");
-                carregarUsuarios();
-            } else {
-                alert("Erro ao deletar usuário.");
-            }
+    let _idParaDeletar = null;
+
+    function deletar(id) {
+        _idParaDeletar = id;
+        new bootstrap.Modal(document.getElementById('modalConfirmarDeletar')).show();
+    }
+
+    async function confirmarDeletar() {
+        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarDeletar')).hide();
+        const resp = await fetch(`../../api/usuario.php?id=${_idParaDeletar}`, {
+            method: 'DELETE'
+        });
+        const result = await resp.json();
+        if(result.message === "Usuário deletado com sucesso") {
+            new bootstrap.Modal(document.getElementById('modalDeletado')).show();
+            carregarUsuarios();
+        } else {
+            new bootstrap.Modal(document.getElementById('modalErroDeletar')).show();
         }
+        _idParaDeletar = null;
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

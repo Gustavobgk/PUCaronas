@@ -112,7 +112,8 @@ switch ($method) {
         $id = $_GET['id'];
         $nome = $input['nome'];
         $email = $input['email'];
-        $senha_hash = $input['senha_hash'];
+        $senha = $input['senha_hash'];
+        $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
         $data_nasc = $input['data_nasc'];
         $status = $input['status'];
         $cargo = $input['cargo'];

@@ -125,12 +125,16 @@
             <button type="button" id="btn" class="btn btn-primary btn-block">Enviar</button>
             <h1 id="resultado" class="text-center mt-3" style="font-size:1.2rem;"></h1>
             <button type="button" class="btn btn-secondary btn-block mt-2">
-                <a href="login.html" class="btn-block">Log in</a>
+                <a href="login.html" class="btn-block" style="color:inherit">Log in</a>
             </button>
         </form>
     </div>
 </div>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+
         async function dormir(ms){
             return new Promise(resolve => setTimeout(() => {
                 
@@ -221,15 +225,16 @@
 
         if (resposta.message) {
             sessionStorage.setItem("nome", nome);
-            resultado.innerHTML = "Usuário adicionado com sucesso!!";
-            await dormir(1000);
             window.location.href = 'login.html';
+            resultado.innerHTML = "Usuário adicionado com sucesso!!";
+            // await dormir(1000);
         }
     } catch (err) {
         console.log("erro é:" + err);
         resultado.innerHTML = "Dados inválidos!!";
     }
 }
-    </script>
+
+</script>
 </body>
 </html>
