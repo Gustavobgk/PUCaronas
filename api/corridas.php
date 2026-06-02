@@ -44,12 +44,15 @@ GROUP BY c.id
     co.data_inicio,
     co.data_fim,
     c.titulo,
-    GROUP_CONCAT(u.nome SEPARATOR ', ') AS passageiros
+    mot.id as id_motorista,
+    mot.nome AS nome_motorista,
+    GROUP_CONCAT(pas.nome SEPARATOR ', ') AS passageiros
 FROM corrida co
-INNER JOIN carona c ON c.id = co.id_carona
-INNER JOIN usuario u ON u.id = co.id_passageiro
+INNER JOIN carona c   ON c.id  = co.id_carona
+INNER JOIN usuario mot ON mot.id = co.id_motorista
+INNER JOIN usuario pas ON pas.id = co.id_passageiro
 WHERE co.id_passageiro = $id_passageiro
-GROUP BY c.id");
+GROUP BY co.id");
  $aplicacoes = [];
             while ($row = $result->fetch_assoc()) {
                 $aplicacoes[] = $row;

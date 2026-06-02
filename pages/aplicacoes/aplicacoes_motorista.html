@@ -102,12 +102,14 @@
             ap = "Recusado";
             btn = ''; 
         }
+        console.log(aplicacao);
             lista.innerHTML += `
                 <div class="card mb-2">
                     <div class="card-body">
  
                         <h5 class="card-subtitle mb-1">Status : ${ap}</h5>
                         <p class="mb-1">Passageiro: <b>${aplicacao.nome}</b></p>
+                        <p class="mb-1">Mensagem: <b>${aplicacao.mensagem}</b></p>
                         <span class="badge badge-primary">${aplicacao.vagas} vagas disponíveis</span>
                                                 <div class="mt-2 float-right">
                       ${btn}  </div>
