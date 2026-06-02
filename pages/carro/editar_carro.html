@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Veículo - PUCaronas</title>
@@ -8,17 +11,41 @@
     <style>
         .card {
             margin-top: 5vh;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 3rem;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         }
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .btn-primary {
+            background-color: darkred;
+            border: none;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+         
+        .btn-primary:hover{
+            background-color: #a00000;
+            transform: translateY(-2px);
+            color: white;
         }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: darkred;">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: darkred;">
   <a class="navbar-brand text-white" href="#">PUCaronas</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -35,6 +62,7 @@
         <a class="nav-link text-white" href="../usuario/login.html" onclick="sessionStorage.clear()">Sair</a>
       </li>
     </ul>
+    <span id="bem-vindo" class="navbar-text ml-auto text-white"></span>
   </div>
 </nav>
 
@@ -64,6 +92,7 @@
         const urlParams = new URLSearchParams(queryString);
         const id_carro = urlParams.get('id');
 document.addEventListener("DOMContentLoaded", async (event) => {
+        const bemvindo = document.getElementById('bem-vindo');
         const nome = sessionStorage.getItem('nome');
         const cargo = sessionStorage.getItem('cargo');
         if (!nome || cargo !== 'motorista') {
@@ -73,6 +102,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
             const obj = await pegar_dados(id_carro);
             preencher(obj);
         }
+        bemvindo.textContent = `Bem-vindo, ${cargo} ${nome}!`;
     });
 
     async function pegar_dados(id){
