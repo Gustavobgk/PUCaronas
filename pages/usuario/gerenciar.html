@@ -193,9 +193,15 @@
 </div>
 
 <script>
+
+
+
     document.addEventListener('DOMContentLoaded', carregarUsuarios);
 
     async function carregarUsuarios() {
+            if (sessionStorage.getItem("cargo") !== "admin"){
+        window.location.href = "../caronas/logado_home.html";
+    }
         const resp = await fetch('../../api/usuario.php');
         const usuarios = await resp.json();
         const container = document.getElementById('tbody-usuarios');

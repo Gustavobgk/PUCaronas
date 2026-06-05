@@ -51,6 +51,14 @@ switch ($method) {
         $status = "espera";
         $cargo = $input['cargo'];
         $doc = $input['doc'];
+
+        $emailEscapado = $conn->real_escape_string($email);
+        $checkResult = $conn->query("SELECT id FROM usuario WHERE email='$emailEscapado'");
+        if ($checkResult->num_rows > 0) {
+            echo json_encode(["error" => "E-mail já cadastrado."]);
+            break;
+        }
+
         if ($conn->query("INSERT INTO usuario (nome, email,senha_hash,data_nasc,status,cargo,doc) VALUES ('$nome', '$email', '$senha_hash', '$data_nasc', '$status', '$cargo','$doc')")){
             echo json_encode(["message" => "Usuário adicionado com sucesso."]);
         }

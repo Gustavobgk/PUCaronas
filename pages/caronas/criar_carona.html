@@ -6,11 +6,18 @@
     <title>Criar Carona</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <style>
-        .form-control {
-            width: 20vw;
-            max-width: 20vw;
-            min-width: 220px;
+        body {
+            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
         }
+
+        .form-control {
+            border-radius: 50px;
+            width: 100%;
+        }
+
         .card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(15px);
@@ -20,21 +27,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             padding: 3rem;
             width: 100%;
-            max-width: 400px;
-            margin: 1rem auto;
-            transition: all 0.3s ease;
-        }
-
-        body {
-            background: linear-gradient(135deg, #8b0000 0%, #2b0000 100%);
-            background-attachment: fixed;
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-        }
-
-        .btn-link {
-            text-decoration: none;
-            color: inherit;
+            max-width: 480px;
         }
 
         .btn-primary {
@@ -47,14 +40,12 @@
             border: none;
         }
 
-        .btn-primary:hover{
+        .btn-primary:hover {
             background: linear-gradient(135deg, #8b0000, #ce0a00);
             color: white;
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
-            border-color: transparent;  
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
-
     </style>
 </head>
 <body>
@@ -80,7 +71,7 @@
 </nav>
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
-    <div class="card">
+    <div class="card mt-4">
         <h3 class="text-center mb-4">Criar Carona</h3>
         <form id="formCarona">
             <div class="form-group">
@@ -192,28 +183,46 @@
             const origem = document.getElementById('origem').value;
             const destino = document.getElementById('destino').value;
 
-               if (!titulo) {
+            if (!id_veiculo || id_veiculo === "Selecione seu carro") {
+                resultado.innerHTML = "Erro: Selecione um veículo.";
+                await dormir(1000);
+                resultado.innerHTML = "";
+                return;
+            }
+            if (!titulo) {
                 resultado.innerHTML = "Erro: O campo Titulo é obrigatório.";
+                await dormir(1000);
+                resultado.innerHTML = "";
                 return;
             }
             if (!descricao) {
                 resultado.innerHTML = "Erro: O campo Descrição é obrigatório.";
+                await dormir(1000);
+                resultado.innerHTML = "";
                 return;
             }
             if (!mensagem) {
                 resultado.innerHTML = "Erro: O campo Mensagem é obrigatório.";
+                await dormir(1000);
+                resultado.innerHTML = "";
                 return;
             }
             if (!vagas) {
                 resultado.innerHTML = "Erro: O campo Vagas é obrigatório.";
+                await dormir(1000);
+                resultado.innerHTML = "";
                 return;
             }
             if (!origem) {
                 resultado.innerHTML = "Erro: O campo Origem é obrigatório.";
+                await dormir(1000);
+                resultado.innerHTML = "";
                 return;
             }
             if (!destino) {
                 resultado.innerHTML = "Erro: O campo Destino é obrigatório.";
+                await dormir(1000);
+                resultado.innerHTML = "";
                 return;
             }
     

@@ -133,9 +133,11 @@
  <script>
     document.addEventListener('DOMContentLoaded', function() {
         const bemvindo = document.getElementById('bem-vindo');
+        const cargo = sessionStorage.getItem('cargo');
         const nome = sessionStorage.getItem('nome');
-        if (nome == null ){
-            window.location.href = 'login.html';
+
+    if (sessionStorage.getItem("cargo") !== "admin"){
+        window.location.href = "../caronas/logado_home.html";
     }
     else{
            bemvindo.innerHTML = `Seja bem-vindo ${nome}`; 

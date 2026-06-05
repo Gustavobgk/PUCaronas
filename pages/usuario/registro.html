@@ -104,7 +104,7 @@
             </div>
             <div class="form-group">
                 <label for="data_nasc">Data de Nascimento:</label>
-                <input type="date" class="form-control" name="data_nasc" id="data_nasc">
+                <input type="text" class="form-control" name="data_nasc" id="data_nasc" placeholder="dd/mm/aaaa" maxlength="10" inputmode="numeric">
             </div>
             <div class="form-group">
                 <label for="cargos">Cargo:</label>
@@ -136,9 +136,7 @@
 <script>
 
         async function dormir(ms){
-            return new Promise(resolve => setTimeout(() => {
-                
-            }, ms))
+            return new Promise(resolve => setTimeout(resolve, ms))
         }
         btn = document.getElementById("btn");
         btn.addEventListener('click', enviar);
@@ -155,24 +153,47 @@
             }
         });
 
+        document.getElementById('data_nasc').addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '').substring(0, 8);
+            if (v.length >= 5) v = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4);
+            else if (v.length >= 3) v = v.substring(0, 2) + '/' + v.substring(2);
+            e.target.value = v;
+        });
+
         async function enviar() {
         try {
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
         const senha_hash = document.getElementById('senha_hash').value;
-        const data_nasc = document.getElementById('data_nasc').value;
+        const data_nasc_input = document.getElementById('data_nasc').value;
+        const [dia, mes, ano] = data_nasc_input.split('/');
+        const data_nasc = `${ano}-${mes}-${dia}`;
         const cargo = document.getElementById('cargos').value;
         const resultado = document.getElementById('resultado');
 
         const dominioPermitido = '@pucpr.edu.br'; 
+            
+
         if (!email.endsWith(dominioPermitido)) {
             resultado.innerHTML = `E-mail inválido! Apenas e-mails do domínio <strong>${dominioPermitido}</strong> são permitidos.`;
+            await dormir(1000);
+            resultado.innerHTML = "";
             return;
         }
 
-        
+        const checkEmail = await fetch(`../../api/usuario.php?email=${encodeURIComponent(email)}`);
+        const emailData = await checkEmail.json();
+        if (emailData && emailData.email) {
+            resultado.innerHTML = "Este e-mail já está cadastrado!";
+            await dormir(2000);
+            resultado.innerHTML = "";
+            return;
+        }
+
         if (senha_hash.length < 8) {
             resultado.innerHTML = "A senha deve ter no mínimo 8 caracteres!";
+            await dormir(2000);
+            resultado.innerHTML = "";
             return;
         }
 

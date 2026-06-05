@@ -302,7 +302,6 @@ function preencherTabelaCaronas(caronas) {
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-info btn-sm flex-grow-1 rounded-pill text-white fw-bold" onclick="exibirDetalhes(${carona.id}, '${carona.origem}', '${carona.destino}', '${carona.titulo}', '${carona.descricao}', '${carona.mensagem}', ${carona.vagas}, '${carona.status}')">Detalhes</button>
-                    <button class="btn btn-danger btn-sm flex-grow-1 rounded-pill fw-bold" onclick="showRoute('${carona.origem}, Curitiba', '${carona.destino}, Curitiba')">Ver Rota</button>
                 </div>
             </div>
         </div>`;
@@ -319,7 +318,9 @@ function exibirDetalhes(id, origem, destino, titulo, descricao, mensagem, vagas,
     document.getElementById('detalhe-vagas').textContent = vagas;
     document.getElementById('detalhe-status').textContent = status;
     document.getElementById('carona-id-hidden').value = id; 
-    
+    if (sessionStorage.getItem('cargo') === 'motorista') {
+        document.getElementById('btn-reservar').style.display = 'none';
+    } 
     document.getElementById('detalhes-carona').style.display = 'block';
 }
 
@@ -441,6 +442,8 @@ async function enviar(){
 
 
     </script>
+
+                    <!-- <button class="btn btn-danger btn-sm flex-grow-1 rounded-pill fw-bold" onclick="showRoute('${carona.origem}, Curitiba', '${carona.destino}, Curitiba')">Ver Rota</button> -->
 
 </body>
 </html>
