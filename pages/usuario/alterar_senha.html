@@ -132,9 +132,16 @@ btn.addEventListener('click',enviar);
             const senha_hash = document.getElementById('senha_hash').value;
             if (senha_hash == ""){
                 document.getElementById("resultado").innerHTML = "Preencha uma senha!";
-                dormir(1000);
+                await dormir(1000);
                 document.getElementById("resultado").innerHTML = "";
                 return;
+            }
+            if (senha_hash.length < 8){
+                document.getElementById("resultado").innerHTML = "A senha deve ter no mínimo <br> 8 caracteres!";
+                await dormir(1200);
+                document.getElementById("resultado").innerHTML = "";
+                return;
+
             }
             const data_nasc = document.getElementById('data_nasc').value;
             var cargo = document.getElementById("cargos").value;
