@@ -60,6 +60,7 @@
 </div>
 
     <script>
+        const dormir = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
        document.addEventListener("DOMContentLoaded", (event) => {
     const nome = sessionStorage.getItem('nome');
     const cargo = sessionStorage.getItem('cargo');
@@ -92,7 +93,11 @@
         console.log("Resposta:", resposta);
 
         const lista = document.getElementById('aplicacoes-lista');
-        lista.innerHTML = ""; 
+        lista.innerHTML = "";
+        if (resposta.length === 0) {
+            lista.innerHTML = `<p class="text-center text-muted mt-3">Não há candidaturas para esta carona.</p>`;
+            return;
+        }
         let contador = 0;
         resposta.forEach(aplicacao => {
         const titulo = document.getElementById('titulo-aplicacao');
@@ -154,6 +159,7 @@ async function atualizarStatus(id_aplicacao,status_ap){
         const resposta = await requisicao.json(); 
         console.log("Resposta:", resposta);
         aplicacoes = document.getElementById('aplicacoes-lista');
+        await dormir(500);
         aplicacoes.innerHTML = "";
         receber(); 
 }
@@ -166,5 +172,6 @@ catch (err){
 
 
     </script>
+<script src="../timeout/session-timeout.js"></script>
 </body>
 </html>

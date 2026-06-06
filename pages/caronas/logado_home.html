@@ -154,9 +154,12 @@
         bemvindo.textContent = `Seja bem-vindo ${nome}`;
     } else if (cargo === 'admin') {
         document.getElementById('div-admin').style.display = 'block';
+        bemvindo.textContent = `Seja bem-vindo ${nome}`;
+
     } else {
         window.location.href = '../usuario/login.html';
     }
 </script>
+<script src="../timeout/session-timeout.js"></script>
 </body>
 </html>

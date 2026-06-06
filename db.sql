@@ -124,7 +124,7 @@ CREATE TRIGGER usuario_status
 AFTER UPDATE ON usuario
 FOR EACH ROW 
 BEGIN
- IF NEW.status = 'aprovado' AND OLD.status = 'espera' THEN
+ IF NEW.status = 'aprovado' AND OLD.status <> 'espera' THEN
 INSERT INTO log_usuario_status (id_usuario,status_anterior,status_novo,data_hora) VALUES (OLD.id, OLD.status,NEW.status,NOW() );
  END IF;
 END $$
@@ -213,7 +213,6 @@ CREATE TABLE avaliacao (
 
 
 
-
 DELIMITER $$
 CREATE PROCEDURE deletar_carona(IN p_id_carona INT)
 BEGIN
@@ -262,20 +261,35 @@ BEGIN
             SET MESSAGE_TEXT = 'Erro: Não é possível deletar um administrador.';
 
     ELSE
-        DELETE FROM corrida
-        WHERE id_passageiro = p_id_usuario
-           OR id_motorista = p_id_usuario
-           OR id_carona IN (SELECT id FROM carona WHERE id_motorista = p_id_usuario);
+        IF v_cargo = 'motorista' THEN
 
-        DELETE FROM aplicacao
-        WHERE id_passageiro = p_id_usuario
-           OR id_carona IN (SELECT id FROM carona WHERE id_motorista = p_id_usuario);
+            DELETE FROM corrida
+            WHERE id_carona IN (
+                SELECT id FROM carona WHERE id_motorista = p_id_usuario
+            );
 
-        DELETE FROM carona WHERE id_motorista = p_id_usuario;
-        DELETE FROM veiculo WHERE id_motorista = p_id_usuario;
+            DELETE FROM aplicacao
+            WHERE id_carona IN (
+                SELECT id FROM carona WHERE id_motorista = p_id_usuario
+            );
 
-        DELETE FROM avaliacao
-        WHERE id_passageiro = p_id_usuario OR id_motorista = p_id_usuario;
+            DELETE FROM carona
+            WHERE id_motorista = p_id_usuario;
+
+            DELETE FROM veiculo
+            WHERE id_motorista = p_id_usuario;
+
+        END IF;
+
+        IF v_cargo = 'passageiro' THEN
+
+            DELETE FROM corrida
+            WHERE id_passageiro = p_id_usuario;
+
+            DELETE FROM aplicacao
+            WHERE id_passageiro = p_id_usuario;
+
+        END IF;
 
         DELETE FROM log_usuario_status
         WHERE id_usuario = p_id_usuario;

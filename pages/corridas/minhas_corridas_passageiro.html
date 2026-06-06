@@ -107,7 +107,7 @@
       <div class="modal-body">
                    <h1 id="id_user"></h1>
                         <div class="mt-1"> <label for="nota">Digite a nota:</label></div>
-                      <div class=""> <input type="number" id="nota"></div>
+                      <div class=""> <input type="number" id="nota" placeholder="0-5" min="0" max="5"></div>
       </div>
       <div class="modal-footer">
         <small id="resultado" style="position: relative; right: 2vw;"></small>
@@ -258,11 +258,16 @@ let id_motorista_atual;
     console.log("id_motorista:", id_motorista);
     console.log("nota:", nota);
 
-    if (!nota) { 
+    if (!nota) {
         document.getElementById('resultado').innerHTML="Digite uma nota!!";
         await dormir(1000);
-         document.getElementById('resultado').innerHTML="";     
-  
+        document.getElementById('resultado').innerHTML="";
+        return;
+    }
+    if (nota < 0 || nota > 5) {
+        document.getElementById('resultado').innerHTML="Nota inválida! Digite um valor entre 0 e 5.";
+        await dormir(1000);
+        document.getElementById('resultado').innerHTML="";
         return;
     }
     const req_check = await fetch(`../../api/avaliacoes.php?checagem_passageiro_motorista=1&id_passageiro=${id_passageiro}&id_motorista=${id_motorista}`);
@@ -298,5 +303,6 @@ let id_motorista_atual;
     }
 }
     </script>
+<script src="../timeout/session-timeout.js"></script>
 </body>
 </html>

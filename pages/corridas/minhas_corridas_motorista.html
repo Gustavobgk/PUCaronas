@@ -125,7 +125,7 @@
                         <select class="form-select form-control" aria-label="Selecione o participante" id="id_user">
                 </select>
                         <div class="mt-1"> <label for="nota">Digite a nota:</label></div>
-                      <div class=""> <input type="number" id="nota"></div>
+                      <div class=""> <input type="number" id="nota" placeholder="0-5" min="0" max="5"></div>
       </div>
       <div class="modal-footer">
         <small id="resultado" style="position: relative; right: 2vw;"></small>
@@ -303,7 +303,12 @@ let id_carona_atual;
   
         return;
     }
-
+    else if (nota < 0 || nota > 5){
+        document.getElementById('resultado').innerHTML="Nota inválida!!";
+        await dormir(1000);
+         document.getElementById('resultado').innerHTML="";  
+         return;
+    }
 
     const req = await fetch(
         `../../api/avaliacoes.php?id_passageiro=${id_passageiro}&id_motorista=${id_motorista}`,
@@ -328,5 +333,6 @@ let id_carona_atual;
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="../timeout/session-timeout.js"></script>
 </body>
 </html>
