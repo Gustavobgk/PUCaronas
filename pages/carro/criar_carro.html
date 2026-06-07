@@ -153,7 +153,7 @@ dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
         else if (resposta.message === "placa") {
             resultado.innerHTML = "Erro: Placa já cadastrada.";
             await dormir(1000);
-            window.location.href = '../caronas/logado_home.html'; // Redireciona para home_logado.html
+            resultado.innerHTML = "";
         }
         else {
             resultado.innerHTML = "Erro de dados, ajuste os dados.";

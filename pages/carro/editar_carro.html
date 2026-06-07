@@ -88,7 +88,8 @@
     </div>
 </div>
 <script>
-        const queryString = window.location.search;
+dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
+const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const id_carro = urlParams.get('id');
 document.addEventListener("DOMContentLoaded", async (event) => {
@@ -125,7 +126,6 @@ document.addEventListener("DOMContentLoaded", async (event) => {
 
 btn = document.getElementById("btn");
 btn.addEventListener('click',enviar);
-dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
 
         function validarPlaca(placa) {
             const p = placa.toUpperCase().trim();
@@ -158,14 +158,19 @@ dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
         const resposta = await requisicao.json(); 
         console.log("Resposta:", resposta); 
         resultado = document.getElementById('resultado');
-        if (resposta.message = "veiculo ok"){
+        if (resposta.message === "veiculo atualizado"){
             resultado.innerHTML = "Veículo adicionado com sucesso";
-            dormir(1000);
+            await dormir(1000);
             window.location.href = 'meus_carros.html';
         }
+                else if (resposta.message === "placa") {
+            resultado.innerHTML = "Erro: Placa já cadastrada.";
+            await dormir(1000);
+        resultado.innerHTML = "";
+              }
         else {
             resultado.innerHTML = "Erro de dados, ajuste os dados.";
-            dormir(1000);
+            await dormir(1000);
             resultado.innerHTML = "";
         }
     }

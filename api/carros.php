@@ -61,17 +61,27 @@ switch ($method) {
         $modelo = $input['modelo'];
         $placa = $input['placa'];
         $n_assentos = $input['n_assentos'];
-        if ($id) {
-        $conn->query("UPDATE veiculo SET modelo='$modelo', placa='$placa', n_assentos='$n_assentos' WHERE id=$id");
-        echo json_encode(["message" => "veiculo atualizado"]);
-        } 
-        else {
-        echo json_encode(["error" => "veiculo não atualizado"]);
+    if ($id) {
+            $check = $conn->query("SELECT id FROM veiculo WHERE placa='$placa' AND id != $id");
+            if ($check->num_rows > 0) {
+                echo json_encode(["message" => "placa"]);
+                break;
+            }
+
+            $conn->query("UPDATE veiculo SET modelo='$modelo', placa='$placa', n_assentos='$n_assentos' WHERE id=$id");
+            echo json_encode(["message" => "veiculo atualizado"]);
+        } else {
+            echo json_encode(["error" => "veiculo não atualizado"]);
         }
         break;
 
     case 'DELETE':
         $id = $_GET['id'];
+        $check = $conn->query("SELECT id FROM carona WHERE id_veiculo=$id");
+        if ($check->num_rows > 0) {
+            echo json_encode(["message" => "em_uso"]);
+            break;
+        }
         $conn->query("DELETE FROM veiculo WHERE id=$id");
         echo json_encode(["message" => "del sucesso"]);
         break;
