@@ -97,9 +97,10 @@ switch ($method) {
     $id_motorista = $_GET['id_motorista'];
     $tipo      = $input['tipo'];
     $nota      = $input['nota'];
+    $comentario = isset($input['comentario']) ? $input['comentario'] : '';
 
-        if ($conn->query("INSERT INTO avaliacao(id_passageiro, id_motorista, tipo, nota) 
-                      VALUES ('$id_passageiro', '$id_motorista', '$tipo', '$nota')")) {
+        if ($conn->query("INSERT INTO avaliacao(id_passageiro, id_motorista, tipo, nota, comentario) 
+                      VALUES ('$id_passageiro', '$id_motorista', '$tipo', '$nota', '$comentario')")) {
         echo json_encode(["message" => "avaliacao enviada"]);
     } else {
         echo json_encode(["error" => $conn->error]);

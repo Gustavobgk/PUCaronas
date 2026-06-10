@@ -117,6 +117,26 @@
     const resultado = document.getElementById("resultado");
     const dormir = (tempo) => new Promise(res => setTimeout(res,tempo));
 
+    // Se houver um erro vindo do backend, tratar especificamente banimento
+    if (resposta.error) {
+      if (resposta.status && resposta.status === 'banido') {
+        resultado.innerHTML = "Você foi banido do site.";
+        resultado.style.color = "red";
+        alert('Você foi banido do site.');
+        await dormir(3000);
+        resultado.innerHTML = "";
+        document.getElementById('formLogin').reset();
+        return;
+      } else {
+        resultado.innerHTML = resposta.error || "Email ou senha errados!!";
+        resultado.style.color = "red";
+        await dormir(1500);
+        resultado.innerHTML = "";
+        document.getElementById('formLogin').reset();
+        return;
+      }
+    }
+
     if(resposta.message == "adm login ok" || resposta.message == "Login ok") { 
             dados = await pegar_dados(email);
             sessionStorage.setItem("nome", dados.nome); 

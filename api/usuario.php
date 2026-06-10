@@ -86,19 +86,23 @@ switch ($method) {
             break;
 
         case 'login':
-
-                $email = $input['email'];
+                $email = trim($input['email']);
                 $senha = $input['senha_hash'];
-                $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
-                $result = $conn->query("SELECT * FROM usuario WHERE email='$email'");
+
+                $emailEscapado = $conn->real_escape_string($email);
+                $result = $conn->query("SELECT * FROM usuario WHERE email='$emailEscapado'");
                 $user = $result->fetch_assoc();
-                if (!$user ||  !password_verify($senha, $user['senha_hash']) ) {
+
+                if (!$user) {
+                    echo json_encode(["error" => "Email ou senha inválidos"]);
+                } else if ($user['status'] == 'banido') {
+                    echo json_encode(["error" => "Você foi banido", "status" => "banido"]);
+                } else if (!password_verify($senha, $user['senha_hash'])) {
                     echo json_encode(["error" => "Email ou senha inválidos"]);
                 }
                 else if ($user['cargo'] == 'admin') {
                     echo json_encode(["message" => "adm login ok", "nome" => $user['nome']]);
                 }
-
                 else if ($user['status'] == 'espera') {
                     echo json_encode(["message" => "login espera", "nome" => $user['nome']]);
                 }
